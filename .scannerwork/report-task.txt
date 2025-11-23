@@ -1,0 +1,6 @@
+projectKey=mini-projet-agile
+serverUrl=http://localhost:9000
+serverVersion=25.11.0.114957
+dashboardUrl=http://localhost:9000/dashboard?id=mini-projet-agile
+ceTaskId=4d4fd057-484d-490e-ab2e-b560b5601949
+ceTaskUrl=http://localhost:9000/api/ce/task?id=4d4fd057-484d-490e-ab2e-b560b5601949
