@@ -1,14 +1,6 @@
--- =============================================
---    Création de la base de données
---    Application d’adoption d’animaux
--- =============================================
 
 CREATE DATABASE IF NOT EXISTS adoption_animals;
 USE adoption_animals;
-
--- =============================================
--- Table person (classe mère User / Admin)
--- =============================================
 
 CREATE TABLE person (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -21,10 +13,6 @@ CREATE TABLE person (
     role ENUM('user', 'admin') NOT NULL
 );
 
--- =============================================
--- Table animal
--- =============================================
-
 CREATE TABLE animal (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -34,10 +22,6 @@ CREATE TABLE animal (
     image VARCHAR(255)
 );
 
--- =============================================
--- Table publication_request (User -> Admin)
--- Un user demande publication d'un animal
--- =============================================
 
 CREATE TABLE publication_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,10 +35,6 @@ CREATE TABLE publication_request (
         ON DELETE CASCADE
 );
 
--- =============================================
--- Table adoption_request
--- Un user demande adopter un animal
--- =============================================
 
 CREATE TABLE adoption_request (
     id INT AUTO_INCREMENT PRIMARY KEY,
