@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Animal
 
-# Register your models here.
+@admin.register(Animal)
+class AnimalAdmin(admin.ModelAdmin):
+    list_display = ("name", "category", "race", "age", "available")
+    search_fields = ("name", "race", "category")
+    list_filter = ("available", "category")
