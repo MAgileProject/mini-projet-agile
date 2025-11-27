@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Liste des Animaux</h1>
+
+<a href="{% url 'animals:add' %}">➕ Ajouter un animal</a>
+
+<ul>
+  {% for a in animals %}
+    <li>
+      <a href="{% url 'animals:detail' a.pk %}">
+        <strong>{{ a.name }}</strong>
+      </a>
+      - {{ a.category }}
+      {% if a.available %} (Disponible) {% else %} (Adopté) {% endif %}
+    </li>
+  {% empty %}
+    <li>Aucun animal trouvé.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
