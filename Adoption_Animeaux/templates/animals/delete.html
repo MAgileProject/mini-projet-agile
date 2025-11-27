@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Confirmer la suppression</h2>
+
+<p>Voulez-vous supprimer : <strong>{{ object.name }}</strong> ?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">🗑️ Supprimer</button>
+</form>
+
+<a href="{% url 'animals:list' %}">Annuler</a>
+{% endblock %}

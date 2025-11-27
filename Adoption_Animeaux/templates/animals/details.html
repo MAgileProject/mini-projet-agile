@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ object.name }}</h1>
+
+{% if object.photo %}
+  <img src="{{ object.photo.url }}" style="max-width:300px">
+{% endif %}
+
+<p><strong>Race :</strong> {{ object.race }}</p>
+<p><strong>Catégorie :</strong> {{ object.category }}</p>
+<p><strong>Âge :</strong> {{ object.age }} ans</p>
+<p>{{ object.description }}</p>
+
+<div>
+  {% if object.available %}
+    <a href="/adoptions/request/{{ object.pk }}/">🐾 Demander l'adoption</a>
+  {% else %}
+    <p>❌ Cet animal est déjà adopté</p>
+  {% endif %}
+</div>
+
+<a href="{% url 'animals:edit' object.pk %}">✏️ Modifier</a> |
+<a href="{% url 'animals:delete' object.pk %}">🗑️ Supprimer</a>
+
+{% endblock %}

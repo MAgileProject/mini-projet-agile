@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ view.action }} Animal</h1>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">💾 Enregistrer</button>
+</form>
+
+<a href="{% url 'animals:list' %}">⬅ Retour</a>
+{% endblock %}
