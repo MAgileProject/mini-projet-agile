@@ -8,10 +8,8 @@ from .forms import AnimalForm
 # 🔹 Liste animaux
 class AnimalListView(ListView):
     model = Animal
-    template_name = 'animals/list.html'
-    context_object_name = 'animals'
-    paginate_by = 12
-
+    template_name = "animals/list.html"
+    context_object_name = "animals"
 
 # 🔹 Détails animal
 class AnimalDetailView(DetailView):
@@ -36,7 +34,7 @@ class AnimalCreateView(LoginRequiredMixin, AdminRequired, CreateView):
 # 🔹 Modifier animal (Admin)
 class AnimalUpdateView(LoginRequiredMixin, AdminRequired, UpdateView):
     model = Animal
-    form_class = AnimalFor
+    form_class = AnimalForm
     
     
     template_name = 'animals/form.html'

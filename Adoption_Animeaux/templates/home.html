@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="home-card">
+    <h1>Bienvenue</h1>
+
+    <p>Connectez-vous ou créez un compte pour continuer.</p>
+
+    <a href="{% url 'login' %}" class="btn-home-main">Se connecter</a>
+
+    <a href="{% url 'register' %}" class="btn-home-link">
+        Créer un compte
+    </a>
+</div>
+
+{% endblock %}

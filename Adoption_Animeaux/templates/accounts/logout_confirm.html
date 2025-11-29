@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Se déconnecter</h2>
+  <p>Voulez-vous vraiment vous déconnecter ?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Oui, me déconnecter</button>
+    <a href="{% url 'animals:list' %}">Non, revenir</a>
+  </form>
+{% endblock %}

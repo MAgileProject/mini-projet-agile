@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="login-container">
+
+    <h2>Connexion</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-group">
+            <label for="id_username">Nom d'utilisateur :</label>
+            <input type="text" name="username" id="id_username" placeholder="Entrez votre nom d'utilisateur" required>
+        </div>
+
+        <div class="input-group">
+            <label for="id_password">Mot de passe :</label>
+            <input type="password" name="password" id="id_password" placeholder="Entrez votre mot de passe" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Se connecter</button>
+
+        <p class="register-link">
+            Pas de compte ?
+            <a href="{% url 'register' %}">Créer un compte</a>
+        </p>
+
+    </form>
+</div>
+{% endblock %}
