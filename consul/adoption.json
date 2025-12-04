@@ -1,7 +1,7 @@
 {
   "service": {
     "name": "adoption-service",
-    "address": "127.0.0.1",
-    "port": 8004
+    "port": 8003,
+    "address": "127.0.0.1"
   }
 }
