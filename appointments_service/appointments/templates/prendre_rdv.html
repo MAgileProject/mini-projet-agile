@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prendre un rendez-vous</title>
+</head>
+<body>
+    <h1>Prendre un rendez-vous</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>User ID :</label><br>
+        <input type="number" name="user"><br><br>
+
+        <label>Animal ID :</label><br>
+        <input type="number" name="animal"><br><br>
+
+        <label>Date :</label><br>
+        <input type="datetime-local" name="date"><br><br>
+
+        <button type="submit">Confirmer</button>
+    </form>
+
+    <a href="/liste/">Voir la liste des rendez-vous</a>
+</body>
+</html>

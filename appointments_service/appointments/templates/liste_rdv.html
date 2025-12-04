@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des rendez-vous</title>
+</head>
+<body>
+    <h1>Liste des rendez-vous</h1>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Animal</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+
+        {% for rdv in rdvs %}
+        <tr>
+            <td>{{ rdv.id }}</td>
+            <td>{{ rdv.user_id }}</td>
+            <td>{{ rdv.animal_id }}</td>
+            <td>{{ rdv.date }}</td>
+            <td>
+                <a href="/annuler/{{ rdv.id }}/">Annuler</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/prendre/">Prendre un autre rendez-vous</a>
+</body>
+</html>
