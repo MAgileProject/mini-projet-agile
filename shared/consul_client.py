@@ -13,3 +13,4 @@ def get_service_url(service_name):
         return f"http://{address}:{port}"
     except:
         return None
+        raise
