@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"       # trafic HTTP
+      - "8080:8080"   # dashboard Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # broker
+      - "15672:15672" # interface management
+
+  consul:
+    image: consul:latest
+    command: "agent -dev -client=0.0.0.0"
+    ports:
+      - "8500:8500"   # interface web
+
+  accounts-service:
+    build: ./accounts_service
+    container_name: accounts-service
+    labels:
+      - "traefik.http.routers.accounts.rule=Host(`accounts.localhost`)"
+      - "traefik.http.services.accounts.loadbalancer.server.port=8001"
+
+  adoption-service:
+    build: ./adoption_service
+    container_name: adoption-service
+    labels:
+      - "traefik.http.routers.adoption.rule=Host(`adoption.localhost`)"
+      - "traefik.http.services.adoption.loadbalancer.server.port=8003"
+
+  animals-service:
+    build: ./animals_service
+    container_name: animals-service
+    labels:
+      - "traefik.http.routers.animals.rule=Host(`animals.localhost`)"
+      - "traefik.http.services.animals.loadbalancer.server.port=8002"
+
+  appointments-service:
+    build: ./appointments_service
+    container_name: appointments-service
+    labels:
+      - "traefik.http.routers.appointments.rule=Host(`appointments.localhost`)"
+      - "traefik.http.services.appointments.loadbalancer.server.port=8004"

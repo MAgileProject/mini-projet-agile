@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
+
+from appointments_service import appointments
 from .models import RendezVous
 from appointments_service.utils import get_service_url
 import requests
@@ -11,7 +13,7 @@ def prendre_rdv(request):
     if animals_url:
         try:
             animals = requests.get(animals_url + "api/animals/").json()
-        except:
+        except requests.RequestException:
             animals = []
 
     if request.method == "POST":
