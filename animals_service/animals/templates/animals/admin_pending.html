@@ -1,0 +1,54 @@
+{% extends "animals/base.html" %}
+{% block title %}Pending Proposals{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Pending Animal Proposals</h2>
+<p class="page-subtitle">
+    These animals were submitted by users and require your approval.
+</p>
+
+<div class="card" style="overflow-x:auto;">
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Age</th>
+            <th>Location</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in animals %}
+        <tr>
+            <td>{{ a.name }}</td>
+            <td>{{ a.type }}</td>
+            <td>{{ a.age }}</td>
+            <td>{{ a.location }}</td>
+            <td>{{ a.created_at }}</td>
+            <td>
+                <form action="/api/admin/animals/{{ a.id }}/approve/" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn" style="background:#0f5132;color:white;padding:5px 10px;">
+                        ✓ Approve
+                    </button>
+                </form>
+
+                <form action="/api/admin/animals/{{ a.id }}/reject/" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" style="padding:5px 10px;">
+                        ✗ Reject
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center;color:#777;">No pending requests.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

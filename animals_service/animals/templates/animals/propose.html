@@ -1,0 +1,17 @@
+{% extends "animals/base.html" %}
+{% block title %}Propose an animal{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Propose an animal for adoption</h2>
+<p class="page-subtitle">
+    Fill in the details below. Your proposal will be reviewed by an admin before being visible in the catalog.
+</p>
+
+<div class="card">
+    <form method="post" style="display:grid;gap:10px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Submit proposal</button>
+    </form>
+</div>
+{% endblock %}

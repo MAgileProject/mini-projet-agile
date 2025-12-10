@@ -1,0 +1,47 @@
+{% extends "animals/base.html" %}
+{% block title %}Admin · Manage animals{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Manage animals</h2>
+<p class="page-subtitle">
+    This table lists all animals. Full CRUD can be done via the REST API by other microservices.
+</p>
+
+<div class="card" style="overflow-x:auto;">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Submitted by user</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for a in animals %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.name }}</td>
+            <td>{{ a.type }}</td>
+            <td>{{ a.location|default:"-" }}</td>
+            <td>{{ a.get_status_display }}</td>
+            <td>{{ a.submitted_by_user }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No animals found.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p class="page-subtitle" style="margin-top:10px;">
+    <strong>API hints:</strong> other services can call<br>
+    <code>GET /api/animals/</code>,
+    <code>POST /api/animals/</code>,
+    <code>GET/PATCH/DELETE /api/animals/&lt;id&gt;/</code>.
+</p>
+{% endblock %}

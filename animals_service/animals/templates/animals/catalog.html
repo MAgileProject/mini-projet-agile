@@ -1,0 +1,379 @@
+{% extends "animals/base.html" %}
+{% block title %}Find a Friend{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Layout of filters + results */
+    .catalog-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.7fr);
+        gap: 22px;
+        align-items: flex-start;
+    }
+    @media (max-width: 900px) {
+        .catalog-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Filters Panel */
+    .filters-panel {
+        background: var(--c-panel);
+        border-radius: 18px;
+        padding: 18px 18px 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid var(--c-border);
+        position: sticky;
+        top: 90px;
+    }
+
+    .filters-panel h3 {
+        margin: 0;
+        font-size: 18px;
+        color: var(--c-text);
+        font-family: Inter;
+    }
+
+    .filters-panel small {
+        color: var(--c-muted);
+        font-size: 12px;
+    }
+
+    .filters-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .filters-grid label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.65px;
+        color: var(--c-muted);
+        font-family: Inter;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    .filters-grid input,
+    .filters-grid select {
+        width: 100%;
+        padding: 9px 11px;
+        border-radius: 10px;
+        border: 1px solid var(--c-border);
+        font-size: 13px;
+        background: #F9F1E4;
+        outline: none;
+    }
+
+    .filters-grid input:focus,
+    .filters-grid select:focus {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 2px rgba(194,138,91,0.18);
+    }
+
+    .filters-footer {
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--c-muted);
+    }
+
+    /* Results Header */
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 10px;
+    }
+
+    .results-header h2 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: 0.4px;
+        color: var(--c-text);
+        font-family: Inter;
+    }
+
+    .results-header span {
+        font-size: 13px;
+        color: var(--c-muted);
+    }
+
+    /* Animal List */
+    .animals-column {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .animal-card {
+        display: grid;
+        grid-template-columns: 130px minmax(0, 1fr);
+        gap: 14px;
+        background: var(--c-panel);
+        border-radius: 18px;
+        padding: 12px 14px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        border: 1px solid var(--c-border);
+        align-items: center;
+        transition: 0.2s;
+    }
+
+    .animal-card:hover {
+        transform: scale(1.01);
+        box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+    }
+
+    @media (max-width: 640px) {
+        .animal-card {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .animal-card img {
+        width: 100%;
+        height: 150px;
+        border-radius: 14px;
+        object-fit: cover;
+    }
+
+    .animal-main-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .animal-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--c-text);
+        font-family: Inter;
+    }
+
+    .animal-sub {
+        font-size: 13px;
+        color: var(--c-muted);
+        margin-top: 3px;
+    }
+
+    /* Status Pill Colors */
+    .status-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-family: Inter;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        font-weight: 600;
+    }
+
+    .status-available {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+    .status-reserved {
+        background: #fff3cd;
+        color: #664d03;
+    }
+    .status-adopted {
+        background: #f8d7da;
+        color: #842029;
+    }
+    .status-pending {
+        background: #e2e3e5;
+        color: #41464b;
+    }
+
+    /* Meta Tags */
+    .animal-meta {
+        margin-top: 6px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--c-muted);
+    }
+
+    .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #F4E8D6;
+        color: var(--c-text);
+    }
+
+    .animal-desc {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #4b4537;
+        line-height: 1.4;
+        max-height: 3.5em;
+        overflow: hidden;
+    }
+
+    .animal-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .link-soft {
+        font-size: 12px;
+        color: var(--c-muted);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-header">
+    <div>
+        <h2>Find a Friend ❤️</h2>
+        <span>Showing {{ animals|length }} friend{{ animals|length|pluralize }}</span>
+    </div>
+
+    <!-- Button to propose an animal -->
+    <a href="{% url 'client_propose_animal' %}" class="btn">
+        + Propose an Animal
+    </a>
+</div>
+
+<div class="catalog-layout">
+
+    <!-- FILTERS -->
+    <aside class="filters-panel">
+        <h3>Search & Filters</h3>
+        <small>Refine results using species, age, location…</small>
+
+        <form method="get" class="filters-grid">
+
+            <div>
+                <label>Search</label>
+                <input type="text" name="q" placeholder="Name, breed..."
+                       value="{{ request.GET.q }}">
+            </div>
+
+            <div>
+                <label>Species</label>
+                <input type="text" name="type" placeholder="Dog, Cat..."
+                       value="{{ request.GET.type }}">
+            </div>
+
+            <div>
+                <label>Breed</label>
+                <input type="text" name="breed" placeholder="Labrador, Persian..."
+                       value="{{ request.GET.breed }}">
+            </div>
+
+            <div>
+                <label>Age</label>
+                <input type="text" name="age" placeholder="Puppy, 3 years..."
+                       value="{{ request.GET.age }}">
+            </div>
+
+            <div>
+                <label>Location</label>
+                <input type="text" name="location" placeholder="City, region..."
+                       value="{{ request.GET.location }}">
+            </div>
+
+            <div>
+                <label>Vaccinated</label>
+                <select name="vaccinated">
+                    <option value="">Any</option>
+                    <option value="true" {% if request.GET.vaccinated == "true" %}selected{% endif %}>Only vaccinated</option>
+                </select>
+            </div>
+
+            <div class="filters-footer">
+                <span>Adjust filters then click search.</span>
+                <button class="btn" type="submit">Search</button>
+            </div>
+        </form>
+    </aside>
+
+    <!-- RESULTS -->
+    <section>
+        <div class="animals-column">
+
+            {% for a in animals %}
+            <article class="animal-card">
+
+                <!-- Image -->
+                <img src="{{ a.photo_url|default:'https://via.placeholder.com/400x300?text=Animal' }}" alt="{{ a.name }}">
+
+                <!-- Content -->
+                <div>
+                    <div class="animal-main-row">
+                        <div>
+                            <div class="animal-name">{{ a.name }}</div>
+                            <div class="animal-sub">
+                                {{ a.type }}
+                                {% if a.breed %} · {{ a.breed }}{% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="status-pill
+                                {% if a.status == 'available' %}status-available{% endif %}
+                                {% if a.status == 'reserved' %}status-reserved{% endif %}
+                                {% if a.status == 'adopted' %}status-adopted{% endif %}
+                                {% if a.status == 'pending' %}status-pending{% endif %}
+                            ">
+                                {{ a.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="animal-meta">
+                        <span class="meta-item">🕒 {{ a.age|default:"Unknown age" }}</span>
+                        {% if a.gender %}
+                        <span class="meta-item">⚥ {{ a.gender }}</span>
+                        {% endif %}
+                        {% if a.size %}
+                        <span class="meta-item">📏 {{ a.size }}</span>
+                        {% endif %}
+                        {% if a.location %}
+                        <span class="meta-item">📍 {{ a.location }}</span>
+                        {% endif %}
+                    </div>
+
+                    <p class="animal-desc">
+                        {{ a.description|default:"No description yet." }}
+                    </p>
+
+                    <!-- Buttons -->
+                    <div class="animal-actions">
+                        <a href="{% url 'animal_detail' a.id %}" class="btn">
+                            🤍 Meet {{ a.name }}
+                        </a>
+
+                        {% if a.status == "available" %}
+                        <span class="link-soft">Ready for adoption</span>
+                        {% elif a.status == "reserved" %}
+                        <span class="link-soft">Reserved</span>
+                        {% elif a.status == "adopted" %}
+                        <span class="link-soft">Adopted</span>
+                        {% elif a.status == "pending" %}
+                        <span class="link-soft">Waiting for admin approval</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+
+            {% empty %}
+            <p>No animals match your search yet.</p>
+            {% endfor %}
+
+        </div>
+    </section>
+</div>
+{% endblock %}
