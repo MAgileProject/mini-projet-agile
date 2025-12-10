@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Statut d'adoption{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Statut de la demande</h2>
+
+<ul class="list-group">
+    <li class="list-group-item"><strong>ID :</strong> {{ req.id }}</li>
+    <li class="list-group-item"><strong>User :</strong> {{ req.user_id }}</li>
+    <li class="list-group-item"><strong>Animal :</strong> {{ req.animal_id }}</li>
+    <li class="list-group-item"><strong>Statut :</strong> {{ req.status }}</li>
+    <li class="list-group-item"><strong>Date :</strong> {{ req.date_requested }}</li>
+</ul>
+
+{% endblock %}

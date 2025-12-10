@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Administration — Demandes d'adoption{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Administration — Demandes d'adoption</h2>
+
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Utilisateur</th>
+            <th>Animal</th>
+            <th>Date de demande</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in reqs %}
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.user_id }}</td>
+            <td>{{ r.animal_id }}</td>
+            <td>{{ r.date_requested }}</td>
+
+            <td>
+                {% if r.status == "pending" %}
+                    <span class="badge bg-warning text-dark">En attente</span>
+                {% elif r.status == "approved" %}
+                    <span class="badge bg-success">Acceptée</span>
+                {% elif r.status == "rejected" %}
+                    <span class="badge bg-danger">Refusée</span>
+                {% elif r.status == "cancelled" %}
+                    <span class="badge bg-secondary">Annulée</span>
+                {% endif %}
+            </td>
+
+            <td class="d-flex gap-2">
+                {% if r.status == "pending" %}
+                    <a href="/adoption/admin/approve/{{ r.id }}/" 
+                       class="btn btn-success btn-sm">
+                        ✔ Accepter
+                    </a>
+
+                    <a href="/adoption/admin/reject/{{ r.id }}/" 
+                       class="btn btn-danger btn-sm">
+                        ✖ Refuser
+                    </a>
+                {% else %}
+                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                        Action impossible
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

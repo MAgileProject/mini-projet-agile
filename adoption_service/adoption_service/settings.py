@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'adoption',
 ]
 
@@ -51,12 +52,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'adoption_service.urls'
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+       'DIRS': [],  
+        'APP_DIRS': True, 
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -111,8 +112,29 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+import os
+from pathlib import Path
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+RABBITMQ = {
+'HOST': os.environ.get('RABBITMQ_HOST', 'rabbitmq'),
+'PORT': int(os.environ.get('RABBITMQ_PORT', 5672)),
+'USER': os.environ.get('RABBITMQ_USER', 'guest'),
+'PASSWORD': os.environ.get('RABBITMQ_PASSWORD', 'guest'),
+'EXCHANGE': os.environ.get('RABBITMQ_EXCHANGE', 'adoption_exchange'),
+}
+
+
+# Consul
+CONSUL_HOST = os.environ.get('CONSUL_HOST', 'consul')
+CONSUL_PORT = int(os.environ.get('CONSUL_PORT', 8500))
+
+
+REST_FRAMEWORK = {
+'DEFAULT_RENDERER_CLASSES': (
+   'rest_framework.renderers.JSONRenderer',
+  'rest_framework.renderers.JSONRenderer',
+),
+}

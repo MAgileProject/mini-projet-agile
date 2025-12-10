@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Mes rendez-vous{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Mes rendez-vous</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Animal</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for rdv in rdvs %}
+        <tr>
+            <td>{{ rdv.id }}</td>
+            <td>{{ rdv.user_id }}</td>
+            <td>{{ rdv.animal_id }}</td>
+            <td>{{ rdv.date }}</td>
+            <td>
+                <a href="/annuler/{{ rdv.id }}/" class="btn btn-danger btn-sm">Annuler</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="/prendre/" class="btn btn-success">Prendre un autre rendez-vous</a>
+
+{% endblock %}

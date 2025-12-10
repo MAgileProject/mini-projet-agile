@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}My Adoption Requests{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4 text-center">📄 My Adoption Requests</h2>
+
+{% if reqs %}
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Animal ID</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for r in reqs %}
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.animal_id }}</td>
+
+            <td>
+                {% if r.status == "pending" %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% elif r.status == "approved" %}
+                    <span class="badge bg-success">Approved</span>
+                {% elif r.status == "rejected" %}
+                    <span class="badge bg-danger">Rejected</span>
+                {% elif r.status == "cancelled" %}
+                    <span class="badge bg-secondary">Cancelled</span>
+                {% endif %}
+            </td>
+
+            <td>{{ r.date_requested }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div class="alert alert-info text-center">
+    You have no adoption requests yet.
+</div>
+{% endif %}
+
+{% endblock %}
