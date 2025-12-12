@@ -1,11 +1,19 @@
 {
   "service": {
     "name": "adoption-service",
+    "id": "adoption-service-1",
     "address": "127.0.0.1",
     "port": 8003,
-    "check": {
-      "http": "http://127.0.0.1:8003/",
-      "interval": "10s"
-    }
+    "tags": [
+      "traefik.enable=true",
+      "traefik.http.routers.adoption.rule=PathPrefix(`/adoption`)",
+      "traefik.http.routers.adoption.entrypoints=web"
+    ],
+    "checks": [
+      {
+        "http": "http://127.0.0.1:8003/",
+        "interval": "10s"
+      }
+    ]
   }
 }

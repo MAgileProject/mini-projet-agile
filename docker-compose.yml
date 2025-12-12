@@ -1,16 +1,16 @@
 services:
+
   traefik:
     image: traefik:v2.10
     command:
       - "--api.insecure=true"
-      - "--api.dashboard=true"
       - "--providers.docker=true"
+      - "--providers.docker.endpoint=tcp://host.docker.internal:2375"
+      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
       - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - web
 
@@ -32,56 +32,36 @@ services:
 
   accounts-service:
     build: ./accounts_service
-    container_name: accounts-service
-    depends_on:
-      - rabbitmq
-      - consul
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.accounts.rule=Host(`accounts.localhost`)"
-      - "traefik.http.routers.accounts.entrypoints=web"
       - "traefik.http.services.accounts.loadbalancer.server.port=8001"
-    networks:
-      - web
-
-  adoption-service:
-    build: ./adoption_service
-    container_name: adoption-service
-    depends_on:
-      - rabbitmq
-      - consul
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.adoption.rule=Host(`adoption.localhost`)"
-      - "traefik.http.routers.adoption.entrypoints=web"
-      - "traefik.http.services.adoption.loadbalancer.server.port=8003"
     networks:
       - web
 
   animals-service:
     build: ./animals_service
-    container_name: animals-service
-    depends_on:
-      - rabbitmq
-      - consul
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.animals.rule=Host(`animals.localhost`)"
-      - "traefik.http.routers.animals.entrypoints=web"
       - "traefik.http.services.animals.loadbalancer.server.port=8002"
     networks:
       - web
 
-  appointments-service:
+  adoption-service:
+    build: ./adoption_service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adoption.rule=Host(`adoption.localhost`)"
+      - "traefik.http.services.adoption.loadbalancer.server.port=8003"
+    networks:
+      - web
+
+  notifications-service:
     build: ./notifications_service
-    container_name: notifications-service
-    depends_on:
-      - rabbitmq
-      - consul
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notifications.rule=Host(`notifications.localhost`)"
-      - "traefik.http.routers.notifications.entrypoints=web"
       - "traefik.http.services.notifications.loadbalancer.server.port=8004"
     networks:
       - web

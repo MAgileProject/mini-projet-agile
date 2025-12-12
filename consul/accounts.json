@@ -1,11 +1,19 @@
 {
   "service": {
     "name": "accounts-service",
+    "id": "accounts-service-1",
     "address": "127.0.0.1",
     "port": 8001,
-    "check": {
-      "http": "http://127.0.0.1:8001/",
-      "interval": "10s"
-    }
+    "tags": [
+      "traefik.enable=true",
+      "traefik.http.routers.accounts.rule=PathPrefix(`/accounts`)",
+      "traefik.http.routers.accounts.entrypoints=web"
+    ],
+    "checks": [
+      {
+        "http": "http://127.0.0.1:8001/",
+        "interval": "10s"
+      }
+    ]
   }
 }

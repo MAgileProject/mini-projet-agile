@@ -1,0 +1,38 @@
+http:
+  routers:
+    accounts:
+      rule: "Host(`accounts.localhost`)"
+      service: accounts
+
+    adoption:
+      rule: "Host(`adoption.localhost`)"
+      service: adoption
+
+    animals:
+      rule: "Host(`animals.localhost`)"
+      service: animals
+
+    notifications:
+      rule: "Host(`notifications.localhost`)"
+      service: notifications
+
+  services:
+    accounts:
+      loadBalancer:
+        servers:
+          - url: "http://accounts-service:8001"
+
+    adoption:
+      loadBalancer:
+        servers:
+          - url: "http://adoption-service:8003"
+
+    animals:
+      loadBalancer:
+        servers:
+          - url: "http://animals-service:8002"
+
+    notifications:
+      loadBalancer:
+        servers:
+          - url: "http://notifications-service:8004"

@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import User
 from .forms import LoginForm, RegisterForm, ProfileForm
+from accounts_service.utils import get_service_url
+
 
 
 # ---------------- LOGIN ----------------
@@ -16,31 +18,28 @@ def login_view(request):
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                messages.error(request, "Invalid email or password.")
+                messages.error(request, "Invalid credentials")
                 return render(request, "accounts/login.html", {"form": form})
 
             if not user.check_password(password):
-                messages.error(request, "Invalid email or password.")
+                messages.error(request, "Invalid credentials")
                 return render(request, "accounts/login.html", {"form": form})
 
             if not user.is_active:
-                messages.error(request, "Your account is disabled.")
+                messages.error(request, "Account disabled")
                 return render(request, "accounts/login.html", {"form": form})
 
-            # Save session
-            request.session["user_id"] = user.id
-            request.session["is_admin"] = user.is_admin
-
-            # 🔥 Redirection selon rôle
+           
             if user.is_admin:
-                return redirect("admin_dashboard")
+                return redirect("http://127.0.0.1:8002/admin/")
             else:
-                return redirect("home")
+                return redirect("http://127.0.0.1:8002/")
 
     else:
         form = LoginForm()
 
     return render(request, "accounts/login.html", {"form": form})
+
 
 
 # ---------------- LOGOUT ----------------

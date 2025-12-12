@@ -1,11 +1,19 @@
 {
   "service": {
     "name": "notifications-service",
+    "id": "notifications-service-1",
     "address": "127.0.0.1",
     "port": 8004,
-    "check": {
-      "http": "http://127.0.0.1:8004/",
-      "interval": "10s"
-    }
+    "tags": [
+      "traefik.enable=true",
+      "traefik.http.routers.notifications.rule=PathPrefix(`/notifications`)",
+      "traefik.http.routers.notifications.entrypoints=web"
+    ],
+    "checks": [
+      {
+        "http": "http://127.0.0.1:8004/notifications/",
+        "interval": "10s"
+      }
+    ]
   }
 }

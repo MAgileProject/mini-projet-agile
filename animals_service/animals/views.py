@@ -1,32 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
 from django.contrib import messages
-from django.conf import settings
 from django.db.models import Q
 
 from rest_framework import generics
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from animals_service.utils import get_service_url
 
 from .models import Animal
 from .forms import AnimalForm
 from .serializers import AnimalSerializer
-
-
-# ============================
-# ROLE CHECK (DEV MODE + header)
-# ============================
-
-def is_admin(request):
-    # DEV MODE: force admin view while developing
-    if getattr(settings, "DEV_MODE", False):
-        return True
-
-    role = request.headers.get("X-User-Role", "user")
-    return role.lower() == "admin"
 
 
 # ============================
@@ -64,19 +46,13 @@ def filter_animals(request):
 
 
 # ============================
-# CLIENT VIEWS
+# CLIENT (USER) VIEWS
 # ============================
 
 def catalog_view(request):
     animals = filter_animals(request).filter(status="available")
+    return render(request, "animals/catalog.html", {"animals": animals})
 
-    adoption_url = get_service_url("adoption-service")
-
-    return render(request, "animals/catalog.html", {
-        "animals": animals,
-        "adoption_url": adoption_url,
-        "user_id": request.session.get("user_id"),
-    })
 
 @api_view(["POST"])
 def mark_animal_adopted(request, pk):
@@ -86,25 +62,19 @@ def mark_animal_adopted(request, pk):
     return Response({"message": "Animal marked as adopted"})
 
 def animal_detail(request, pk):
-    if is_admin(request):
-        return redirect("admin_dashboard")
-
     animal = get_object_or_404(Animal, pk=pk)
     return render(request, "animals/detail.html", {"animal": animal})
 
 
 def client_propose_animal(request):
-    if is_admin(request):
-        return redirect("admin_dashboard")
-
     if request.method == "POST":
         form = AnimalForm(request.POST)
         if form.is_valid():
-            a = form.save(commit=False)
-            a.status = "pending"
-            a.submitted_by_user = True
-            a.save()
-            messages.success(request, "Your animal proposal has been submitted!")
+            animal = form.save(commit=False)
+            animal.status = "pending"
+            animal.submitted_by_user = True
+            animal.save()
+            messages.success(request, "Animal proposal sent for validation.")
             return redirect("catalog")
     else:
         form = AnimalForm()
@@ -117,9 +87,6 @@ def client_propose_animal(request):
 # ============================
 
 def admin_dashboard(request):
-    if not is_admin(request):
-        return redirect("catalog")
-
     stats = {
         "total_animals": Animal.objects.count(),
         "pending_animals": Animal.objects.filter(status="pending").count(),
@@ -130,23 +97,47 @@ def admin_dashboard(request):
 
 
 def admin_manage_animals(request):
-    if not is_admin(request):
-        return redirect("catalog")
-
     animals = Animal.objects.all()
     return render(request, "animals/admin_manage.html", {"animals": animals})
 
 
 def admin_pending(request):
-    if not is_admin(request):
-        return redirect("catalog")
-
     animals = Animal.objects.filter(status="pending")
     return render(request, "animals/admin_pending.html", {"animals": animals})
 
 
+def admin_reserved_animals(request):
+    animals = Animal.objects.filter(status="reserved")
+    return render(request, "animals/admin_reserved.html", {"animals": animals})
+
+
+def admin_adopted_animals(request):
+    animals = Animal.objects.filter(status="adopted")
+    return render(request, "animals/admin_adopted.html", {"animals": animals})
+
+
+def admin_edit_animal(request, pk):
+    animal = get_object_or_404(Animal, pk=pk)
+
+    if request.method == "POST":
+        form = AnimalForm(request.POST, instance=animal)
+        if form.is_valid():
+            form.save()
+            return redirect("admin_manage_animals")
+    else:
+        form = AnimalForm(instance=animal)
+
+    return render(request, "animals/admin_edit.html", {"form": form, "animal": animal})
+
+
+def admin_delete_animal(request, pk):
+    animal = get_object_or_404(Animal, pk=pk)
+    animal.delete()
+    return redirect("admin_manage_animals")
+
+
 # ============================
-# PUBLIC API
+# API
 # ============================
 
 class AnimalListCreateAPI(generics.ListCreateAPIView):
@@ -170,19 +161,11 @@ def request_adoption_api(request, pk):
 
     animal.status = "reserved"
     animal.save()
+    return Response({"message": "Adoption request sent"})
 
-    return Response({"message": "Adoption request sent!"})
-
-
-# ============================
-# ADMIN API ACTIONS
-# ============================
 
 @api_view(["POST"])
 def approve_animal_api(request, pk):
-    if not is_admin(request):
-        return Response({"error": "Unauthorized"}, status=403)
-
     animal = get_object_or_404(Animal, pk=pk)
     animal.status = "available"
     animal.submitted_by_user = False
@@ -192,9 +175,6 @@ def approve_animal_api(request, pk):
 
 @api_view(["POST"])
 def reject_animal_api(request, pk):
-    if not is_admin(request):
-        return Response({"error": "Unauthorized"}, status=403)
-
     animal = get_object_or_404(Animal, pk=pk)
     animal.delete()
     return redirect("admin_pending")
