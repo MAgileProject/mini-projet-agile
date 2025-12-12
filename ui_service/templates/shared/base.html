@@ -2,128 +2,210 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <title>{% block title %}Adoption App{% endblock %}</title>
+
     {% load static %}
 
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-/* -------------------------------------------------
-   GLOBAL THEME – Modern, Soft, Warm UI
-   Colors: #7F5539 #A68A64 #EDE0D4 #656D4A #414833
--------------------------------------------------- */
+/* =================================================
+   GLOBAL THEME — MODERN / SOFT / GLASS
+   Palette officielle :
+   #7F5539 #A68A64 #EDE0D4 #656D4A #414833
+================================================= */
 
+:root {
+    --brown: #7F5539;
+    --light-brown: #A68A64;
+    --cream: #EDE0D4;
+    --olive: #656D4A;
+    --dark-olive: #414833;
+}
+
+/* ================= BODY ================= */
 body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-            background: radial-gradient(circle at top left, #EDE0D4 0, #D8C3A5 35%, #B08968 80%);
-            color: var(--dark-olive);
-        }
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: radial-gradient(circle at top left,
+        #EDE0D4 0%,
+        #D8C3A5 40%,
+        #B08968 85%);
+    color: var(--dark-olive);
+}
 
-/* Soft transparent layer so text is readable */
+/* Soft overlay for readability */
 .background-overlay {
     position: fixed;
     inset: 0;
     background: rgba(255,255,255,0.55);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(4px);
     z-index: -1;
 }
 
-/* -------------------------------------------------
-   NAVBAR – Glassmorphism
--------------------------------------------------- */
+/* ================= NAVBAR ================= */
 .navbar {
-    backdrop-filter: blur(14px);
-    background: rgba(255,255,255,0.55);
-    border-bottom: 1px solid rgba(255,255,255,0.25);
-    padding: 15px 35px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 
-}
+    padding: 14px 42px;
+    backdrop-filter: blur(16px);
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.75),
+        rgba(237,224,212,0.75)
+    );
 
-.navbar a {
-    text-decoration: none;
-    color: #5c574f;
-    margin-left: 20px;
-    font-weight: 500;
-    transition: 0.2s;
-    
-}
-
-.navbar a:hover {
-    color: #7F5539;
+    border-bottom: 1px solid rgba(127,85,57,0.2);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.12);
 }
 
 .brand {
     font-size: 20px;
     font-weight: 600;
-    color: #7F5539;
+    color: var(--brown);
+    text-decoration: none;
 }
 
-/* -------------------------------------------------
-   CONTAINER
--------------------------------------------------- */
+/* Nav links */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(65,72,51,0.85);
+    padding: 6px 10px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+}
+
+.navbar a:hover {
+    background: rgba(127,85,57,0.12);
+    color: var(--brown);
+}
+
+/* Notification icon */
+.nav-notification {
+    position: relative;
+    font-size: 18px;
+}
+
+.nav-notification span {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--brown);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 999px;
+}
+
+/* ================= MAIN ================= */
 main {
-    padding: 40px 60px;
+    padding: 42px 60px;
 }
 
-/* -------------------------------------------------
-   GLASS PANELS
--------------------------------------------------- */
+/* ================= GLASS PANELS ================= */
 .glass {
-    background: rgba(255,255,255,0.70);
-    backdrop-filter: blur(16px);
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(18px);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    border: 1px solid rgba(127,85,57,0.2);
 }
 
-/* -------------------------------------------------
-   FOOTER
--------------------------------------------------- */
+/* ================= FOOTER ================= */
 .footer {
-    margin-top: 80px;
-    padding: 30px;
+    margin-top: 90px;
+    padding: 36px;
     text-align: center;
     font-size: 14px;
-    background: rgba(255,255,255,0.60);
+
+    background: rgba(255,255,255,0.65);
     backdrop-filter: blur(14px);
-    border-top: 1px solid rgba(255,255,255,0.3);
+    border-top: 1px solid rgba(127,85,57,0.25);
+}
+
+.footer h3 {
+    margin-bottom: 10px;
+    color: var(--dark-olive);
+}
+
+.footer p {
+    margin: 6px 0;
+    color: rgba(65,72,51,0.85);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    main {
+        padding: 28px;
+    }
+    .navbar {
+        padding: 14px 24px;
+    }
 }
 </style>
-
 </head>
 
 <body>
 
 <div class="background-overlay"></div>
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
     <div class="nav-left">
-        <a href="/" class="brand">🐾 Adoption Animaux</a>
+        <a href="http://frontend-service/" class="brand">🐾 Adoption Animaux</a>
     </div>
 
     <div class="nav-right">
-        <a href="http://animals-service:8002/">Animaux</a>
-        <a href="http://accounts-service:8001/profile/">Mon compte</a>
-        <a href="http://adoption-service:8003/my/">Mes adoptions</a>
-        <a href="/">Accueil</a>
+        <!-- animals_service -->
+        <a href="http://animals-service/">Animaux</a>
+
+        <!-- accounts_service -->
+        <a href="http://accounts-service/profile/">Mon compte</a>
+
+        <!-- adoption_service -->
+        <a href="http://adoption-service/my/">Mes adoptions</a>
+
+        <!-- notifications (adoption_service) -->
+        <a href="http://adoption-service/notifications/">
+            🔔 Notifications
+        </a>
+
         <a href="#about-section">À propos</a>
     </div>
 </nav>
 
+
+<!-- ================= CONTENT ================= -->
 <main>
     {% block content %}
     {% endblock %}
 </main>
 
+<!-- ================= FOOTER ================= -->
 <footer id="about-section" class="footer">
     <h3>À propos</h3>
-    <p>Plateforme d’adoption d’animaux — architecture microservices (Django + Consul + RabbitMQ + Traefik).</p>
+    <p>
+        Plateforme d’adoption d’animaux — architecture microservices
+        (Django · Consul · RabbitMQ · Traefik)
+    </p>
     <p>Développé avec ❤️ pour aider les animaux à trouver un foyer.</p>
 </footer>
 
