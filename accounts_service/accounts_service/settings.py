@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'accounts_service.wsgi.application'
-
+ASGI_APPLICATION = 'accounts_service.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -115,4 +118,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "accounts" / "static"
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# RabbitMQ config (amqp url)
+RABBITMQ_URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/')
+
+
+# Consul config
+CONSUL_HOST = os.environ.get('CONSUL_HOST', 'consul')
+CONSUL_PORT = int(os.environ.get('CONSUL_PORT', '8500'))
+SERVICE_NAME = os.environ.get('SERVICE_NAME', 'accounts_service')
+SERVICE_PORT = int(os.environ.get('SERVICE_PORT', '8000'))
+SERVICE_PORT = int(os.environ.get('SERVICE_PORT', '8001'))
+SERVICE_ID = "accounts-service-1"
+
+
+# Admin credentials (used by the startup script to create an admin user)
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'ChangeMe123!')

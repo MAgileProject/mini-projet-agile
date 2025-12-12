@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login – Accounts</title>
+    <style>
+        :root {
+            --bg-light: #FAF3E7;
+            --bg-mid: #F3E6D8;
+            --bg-deep: #E8D3BF;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --accent: #B08968;
+            --accent-dark: #A67C5B;
+            --danger: #CC3D3D;
+            --text-main: #463F3A;
+            --text-soft: #6B6058;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.12);
+            --radius-card: 20px;
+            --radius-pill: 999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top,
+                var(--bg-light) 0%,
+                var(--bg-mid) 45%,
+                var(--bg-deep) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: var(--radius-card);
+            padding: 28px 26px 26px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .logo {
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-soft);
+            margin-bottom: 22px;
+        }
+
+        form p {
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-soft);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 12px;
+            border: 1px solid rgba(176, 137, 104, 0.35);
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(176, 137, 104, 0.35);
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 11px 14px;
+            border-radius: 14px;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+        }
+
+        .btn:hover {
+            background: var(--accent-dark);
+        }
+
+        .bottom {
+            margin-top: 16px;
+            font-size: 13px;
+            text-align: center;
+            color: var(--text-soft);
+        }
+
+        .link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            background: rgba(255, 214, 196, 0.9);
+            border-left: 4px solid var(--danger);
+            padding: 9px 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="card">
+
+        <div class="logo">Accounts Service</div>
+        <div class="title">Welcome</div>
+        <div class="subtitle">Sign in to manage your profile.</div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Login</button>
+        </form>
+
+        <p class="bottom">
+            Don’t have an account?
+            <a class="link" href="/register/">Create one</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

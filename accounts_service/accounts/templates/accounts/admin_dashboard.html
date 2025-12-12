@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard – Accounts</title>
+    <style>
+        :root {
+            --bg-light: #FAF3E7;
+            --bg-mid: #F3E6D8;
+            --bg-deep: #E8D3BF;
+            --card-bg: rgba(255,255,255,0.78);
+            --accent: #B08968;
+            --accent-dark: #A67C5B;
+            --olive: #A6B37E;
+            --danger: #CC3D3D;
+            --text-main: #463F3A;
+            --text-soft: #6B6058;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.12);
+        }
+
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body {
+            font-family:"Segoe UI", system-ui, sans-serif;
+            background: radial-gradient(circle at top,
+                var(--bg-light) 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+            min-height:100vh;
+            padding:26px;
+            color:var(--text-main);
+        }
+
+        .topbar {
+            max-width:1000px;
+            margin:0 auto 14px auto;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .badge-admin {
+            padding:4px 10px;
+            border-radius:999px;
+            background:rgba(176,137,104,0.15);
+            font-size:12px;
+            color:var(--accent-dark);
+        }
+
+        .logout-link {
+            font-size:13px;
+            color:var(--text-soft);
+            text-decoration:none;
+        }
+        .logout-link:hover { text-decoration:underline; }
+
+        .card-main {
+            max-width:1000px;
+            margin:0 auto;
+            background:var(--card-bg);
+            border-radius:24px;
+            padding:22px 24px 18px;
+            box-shadow:var(--shadow-soft);
+            backdrop-filter:blur(14px);
+        }
+
+        h1 {
+            font-size:24px;
+            margin-bottom:4px;
+        }
+
+        .subtitle {
+            font-size:13px;
+            color:var(--text-soft);
+            margin-bottom:16px;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            margin-top:10px;
+            font-size:13px;
+        }
+
+        th, td {
+            padding:8px 10px;
+            text-align:left;
+        }
+
+        th {
+            font-size:12px;
+            text-transform:uppercase;
+            letter-spacing:0.06em;
+            color:var(--text-soft);
+            border-bottom:1px solid rgba(0,0,0,0.06);
+        }
+
+        tr:nth-child(even) {
+            background:rgba(255,255,255,0.7);
+        }
+
+        tr:nth-child(odd) {
+            background:rgba(255,255,255,0.4);
+        }
+
+        .status-pill {
+            padding:4px 9px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:600;
+        }
+
+        .status-active {
+            background:rgba(166,179,126,0.2);
+            color:var(--olive);
+        }
+
+        .status-inactive {
+            background:rgba(204,61,61,0.1);
+            color:var(--danger);
+        }
+
+        .actions a {
+            font-size:12px;
+            text-decoration:none;
+            padding:5px 8px;
+            border-radius:999px;
+            margin-right:4px;
+            display:inline-block;
+        }
+
+        .btn-toggle {
+            background:rgba(166,179,126,0.16);
+            color:var(--olive);
+        }
+
+        .btn-edit {
+            background:rgba(176,137,104,0.18);
+            color:var(--accent-dark);
+        }
+
+        .btn-del {
+            background:rgba(204,61,61,0.16);
+            color:var(--danger);
+        }
+
+        .btn-toggle:hover, .btn-edit:hover, .btn-del:hover {
+            filter:brightness(0.95);
+        }
+
+        .footer {
+            margin-top:12px;
+            font-size:11px;
+            color:var(--text-soft);
+            display:flex;
+            justify-content:space-between;
+        }
+
+        @media (max-width: 720px) {
+            body { padding:12px; }
+            .topbar { flex-direction:column; gap:6px; align-items:flex-start; }
+            table { font-size:12px; }
+            th, td { padding:6px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>
+        <strong>Accounts Service</strong>
+        <span class="badge-admin">ADMIN</span>
+    </div>
+    <a class="logout-link" href="/logout/">Logout</a>
+</div>
+
+<div class="card-main">
+    <h1>Users Dashboard</h1>
+    <p class="subtitle">
+        Manage platform users, activation status and account details.
+    </p>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th style="text-align:right;">Actions</th>
+        </tr>
+
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.firstname }}</td>
+            <td>{{ u.lastname }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+                {% if u.is_active %}
+                    <span class="status-pill status-active">Active</span>
+                {% else %}
+                    <span class="status-pill status-inactive">Inactive</span>
+                {% endif %}
+            </td>
+            <td class="actions" style="text-align:right;">
+                <a class="btn-toggle" href="/admin-panel/users/{{ u.id }}/toggle-active/">Toggle</a>
+                <a class="btn-edit" href="/admin-panel/users/{{ u.id }}/edit/">Edit</a>
+                <a class="btn-del" href="/admin-panel/users/{{ u.id }}/delete/">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="footer">
+        <span>Logged in as {{ admin.firstname }} {{ admin.lastname }}</span>
+        <span>Admin control · Cozy accounts center 🐾</span>
+    </div>
+</div>
+</body>
+</html>

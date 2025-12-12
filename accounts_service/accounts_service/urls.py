@@ -1,25 +1,36 @@
-"""
-URL configuration for accounts_service project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
+from accounts.views import (
+    index,
+    register,
+    login_view, logout_view,
+    home, profile, delete_account,
+    admin_dashboard, admin_edit_user, toggle_user_status, admin_delete_user
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('accounts.urls')),
-     path('adoptions/', include('adoptions.urls')),
+    # Default → go to login page
+    path("", login_view, name="login_default"),
 
+    # Auth
+    path("login/", login_view, name="login"),
+    path("register/", register, name="register"),
+    path("logout/", logout_view, name="logout"),
+
+    # User pages
+    path("home/", home, name="home"),
+    path("profile/", profile, name="profile"),
+    path("delete-account/", delete_account, name="delete_account"),
+
+    # Admin pages
+    path("admin-panel/", admin_dashboard, name="admin_dashboard"),
+    path("admin-panel/users/<int:user_id>/edit/", admin_edit_user, name="admin_edit_user"),
+    path("admin-panel/users/<int:user_id>/toggle-active/", toggle_user_status, name="toggle_user_status"),
+    path("admin-panel/users/<int:user_id>/delete/", admin_delete_user, name="admin_delete_user"),
+
+    # Django admin
+    path("admin/", admin.site.urls),
+
+    # REST API
+    path("api/accounts/", include("accounts.urls")),
 ]

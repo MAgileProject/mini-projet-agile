@@ -1,18 +1,31 @@
-from .connection import get_connection
 import json
+from django.conf import settings
+from .connection import get_connection
 
-def publish_user_created(data):
-    connection, channel = get_connection()
+QUEUE_NAME = "notifications"
 
-    queue = "user_created"
+def publish_event(event_type: str, payload: dict):
+    """
+    Envoi d’un message dans RabbitMQ pour les autres microservices.
+    Exemple :
+        publish_event("USER_REGISTERED", {"user_id": 5})
+    """
+    try:
+        connection, channel = get_connection()
+        channel.queue_declare(queue=QUEUE_NAME, durable=True)
 
-    channel.queue_declare(queue=queue, durable=True)
-    channel.basic_publish(
-        exchange='',
-        routing_key=queue,
-        body=json.dumps(data)
-    )
+        message = {
+            "event_type": event_type,
+            "payload": payload,
+        }
 
-    print("[✔] Message envoyé :", data)
+        channel.basic_publish(
+            exchange="",
+            routing_key=QUEUE_NAME,
+            body=json.dumps(message).encode("utf-8"),
+        )
+        connection.close()
+        print(f"[RABBITMQ] Sent {event_type} -> {payload}")
 
-    connection.close()
+    except Exception as e:
+        print(f"[RABBITMQ] ERROR sending message: {e}")

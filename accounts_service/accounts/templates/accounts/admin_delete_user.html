@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete User – Admin</title>
+    <style>
+        :root {
+            --bg-light:#FAF3E7;
+            --bg-mid:#F3E6D8;
+            --bg-deep:#E8D3BF;
+            --card-bg:rgba(255,255,255,0.8);
+            --danger:#CC3D3D;
+            --danger-dark:#B53030;
+            --text-main:#463F3A;
+            --text-soft:#6B6058;
+            --shadow-soft:0 4px 20px rgba(0,0,0,0.12);
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{
+            font-family:"Segoe UI",system-ui,sans-serif;
+            background:radial-gradient(circle at top,var(--bg-light)0%,var(--bg-mid)45%,var(--bg-deep)100%);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:var(--text-main);
+        }
+        .page{width:100%;max-width:460px;padding:24px;}
+        .card{
+            background:var(--card-bg);
+            backdrop-filter:blur(14px);
+            border-radius:22px;
+            padding:24px 24px 20px;
+            box-shadow:var(--shadow-soft);
+        }
+        h2{font-size:22px;margin-bottom:6px;}
+        p{font-size:14px;color:var(--text-soft);margin-bottom:18px;}
+        strong{color:var(--text-main);}
+        .btn-danger{
+            width:100%;
+            padding:10px;
+            border-radius:14px;
+            border:none;
+            background:var(--danger);
+            color:#fff;
+            font-weight:600;
+            cursor:pointer;
+            font-size:14px;
+            margin-bottom:10px;
+        }
+        .btn-danger:hover{background:var(--danger-dark);}
+        .link-cancel{
+            display:inline-block;
+            font-size:13px;
+            color:var(--text-soft);
+            text-decoration:none;
+        }
+        .link-cancel:hover{text-decoration:underline;}
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+        <h2>Delete user</h2>
+        <p>
+            Are you sure you want to delete
+            <strong>{{ user.firstname }} {{ user.lastname }}</strong>?
+            This action cannot be undone.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn-danger" type="submit">Delete user</button>
+        </form>
+
+        <a class="link-cancel" href="/admin-panel/">← Cancel and go back</a>
+    </div>
+</div>
+</body>
+</html>

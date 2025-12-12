@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile – Accounts</title>
+
+    <style>
+        :root {
+            --bg-light: #FAF3E7;
+            --bg-mid: #F3E6D8;
+            --bg-deep: #E8D3BF;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --accent: #B08968;
+            --accent-dark: #A67C5B;
+            --text: #463F3A;
+            --text-soft: #6B6058;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, var(--bg-light), var(--bg-mid), var(--bg-deep));
+            display: flex;
+            justify-content: center;
+            padding-top: 70px;
+        }
+
+        .card {
+            width: 620px;
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            padding: 30px 34px;
+            border-radius: 22px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        h2 {
+            margin: 0 0 8px;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .section-title {
+            color: var(--text-soft);
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .row {
+            margin-bottom: 14px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-soft);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 9px 12px;
+            font-size: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(176, 137, 104, 0.32);
+        }
+
+        input[readonly], textarea[readonly] {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(150,150,150,0.28);
+            color: #6d665f;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 14px;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: var(--accent-dark);
+        }
+
+        .danger {
+            background: #D9534F;
+        }
+
+        .danger:hover {
+            background: #c0392b;
+        }
+
+        .logout {
+            background: #fff;
+            color: var(--text);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .logout:hover { background: #f3f3f3; }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Hello {{ user.firstname }} 🐾</h2>
+    <p class="section-title">Your personal information</p>
+
+    <form id="profileForm" method="post" action="/profile/">
+        {% csrf_token %}
+
+        <div class="row">
+            <label>Firstname:</label>
+            <input type="text" name="firstname" value="{{ user.firstname }}" readonly>
+        </div>
+
+        <div class="row">
+            <label>Lastname:</label>
+            <input type="text" name="lastname" value="{{ user.lastname }}" readonly>
+        </div>
+
+        <div class="row">
+            <label>Email:</label>
+            <input type="email" name="email" value="{{ user.email }}" readonly>
+        </div>
+
+        <div class="row">
+            <label>Phone:</label>
+            <input type="text" name="phone" value="{{ user.phone }}" readonly>
+        </div>
+
+        <div class="row">
+            <label>Address:</label>
+            <textarea name="address" rows="3" readonly>{{ user.address }}</textarea>
+        </div>
+
+        <div class="actions">
+            <button type="button" id="editBtn" class="btn">Edit</button>
+            <button type="submit" id="saveBtn" class="btn" style="display:none;">Save</button>
+
+            <a href="/logout/"><button type="button" class="btn logout">Logout</button></a>
+
+            <a href="/delete-account/"><button type="button" class="btn danger">Delete my account</button></a>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    const editBtn = document.getElementById("editBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const inputs = document.querySelectorAll("input, textarea");
+
+    editBtn.addEventListener("click", () => {
+        inputs.forEach(el => el.removeAttribute("readonly"));
+        editBtn.style.display = "none";
+        saveBtn.style.display = "inline-block";
+    });
+</script>
+
+</body>
+</html>
