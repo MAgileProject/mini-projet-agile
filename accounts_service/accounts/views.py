@@ -4,6 +4,8 @@ from .models import User
 from .forms import LoginForm, RegisterForm, ProfileForm
 
 
+
+
 # ---------------- LOGIN ----------------
 def login_view(request):
     if request.method == "POST":
@@ -31,7 +33,7 @@ def login_view(request):
             request.session["user_id"] = user.id
             request.session["is_admin"] = user.is_admin
 
-            # 🔥 Redirection selon rôle
+            #Redirection selon rôle
             if user.is_admin:
                 return redirect("admin_dashboard")
             else:
