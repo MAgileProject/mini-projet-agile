@@ -1,22 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Animal</title>
+    <style>
+        :root {
+            --brown: #7F5539;
+            --light-brown: #A68A64;
+            --cream: #EDE0D4;
+            --olive: #656D4A;
+            --dark-olive: #414833;
+            --muted-olive: rgba(101, 109, 74, 0.8);
+            --muted-brown: rgba(127, 85, 57, 0.85);
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 18px 45px rgba(33, 37, 26, 0.18);
+            --transition: all 0.2s ease;
+        }
 
-{% load static %}
+        * { box-sizing: border-box; }
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'animals/css/style.css' %}">
-{% endblock %}
-{% block title %}Edit {{ animal.name }}{% endblock %}
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+            background: radial-gradient(circle at top left, #EDE0D4 0, #D8C3A5 35%, #B08968 80%);
+            color: var(--dark-olive);
+        }
 
-{% block content %}
+        .admin-shell { min-height: 100vh; display: flex; flex-direction: column; }
 
-<div class="form-container glass">
-    <h1>Edit {{ animal.name }}</h1>
+        .admin-topbar {
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(16px);
+            background: linear-gradient(90deg,
+                    rgba(248, 244, 239, 0.92),
+                    rgba(237, 224, 212, 0.90),
+                    rgba(166, 138, 100, 0.16));
+            border-bottom: 1px solid rgba(65, 72, 51, 0.16);
+        }
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+        .admin-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
 
-        <button class="btn-primary full">Save</button>
-    </form>
+        .admin-topbar-right a {
+            text-decoration: none;
+            font-size: 0.85rem;
+            color: var(--muted-olive);
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .admin-topbar-right a:hover {
+            border-color: rgba(65, 72, 51, 0.2);
+            background: rgba(248, 244, 239, 0.85);
+            color: var(--dark-olive);
+        }
+
+        .admin-main {
+            flex: 1;
+            padding: 26px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .admin-inner {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(253, 250, 245, 0.96);
+            border-radius: 24px;
+            padding: 24px 24px 26px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(127, 85, 57, 0.16);
+            backdrop-filter: blur(16px);
+        }
+
+        h1 {
+            margin: 0 0 6px;
+            font-size: 1.45rem;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            margin: 0 0 18px;
+            font-size: 0.9rem;
+            color: var(--muted-olive);
+        }
+
+        form p {
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 0.88rem;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--dark-olive);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(127, 85, 57, 0.3);
+            font-family: inherit;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.96);
+            transition: var(--transition);
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--brown);
+            box-shadow: 0 0 0 2px rgba(127, 85, 57, 0.15);
+        }
+
+        .form-actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            border: none;
+            outline: none;
+            background: linear-gradient(135deg, var(--brown), #9C6644);
+            color: #FDF8F1;
+            padding: 9px 16px;
+            font-size: 0.86rem;
+            border-radius: 999px;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 18px rgba(127, 85, 57, 0.35);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(127, 85, 57, 0.4);
+        }
+
+        .btn-outline {
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.84rem;
+            border: 1px solid rgba(65, 72, 51, 0.26);
+            background: rgba(250, 245, 239, 0.9);
+            color: var(--dark-olive);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            border-color: rgba(65, 72, 51, 0.5);
+        }
+
+        @media (max-width: 720px) {
+            .admin-inner {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-shell">
+
+    <div class="admin-topbar">
+        <div class="admin-topbar-left">
+            <span>🐾 Edit animal</span>
+        </div>
+        <div class="admin-topbar-right">
+            <a href="{% url 'admin_manage_animals' %}">Back to list</a>
+        </div>
+    </div>
+
+    <main class="admin-main">
+        <section class="admin-inner">
+            <h1>Edit {{ animal.name }}</h1>
+            <p class="subtitle">Update this animal’s information in the catalog.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div class="form-actions">
+                    <a href="{% url 'admin_manage_animals' %}" class="btn-outline">Cancel</a>
+                    <button type="submit" class="btn-primary">Save changes</button>
+                </div>
+            </form>
+        </section>
+    </main>
 </div>
-
-{% endblock %}
+</body>
+</html>

@@ -1,22 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Propose an Animal</title>
+    <style>
+        :root {
+            --brown: #7F5539;
+            --light-brown: #A68A64;
+            --cream: #EDE0D4;
+            --olive: #656D4A;
+            --dark-olive: #414833;
+        }
 
-{% load static %}
+        * { box-sizing: border-box; }
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'animals/css/style.css' %}">
-{% endblock %}
-{% block title %}Propose an Animal{% endblock %}
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, sans-serif;
+            background: radial-gradient(circle at top, #f7eee4 0%, #e0cdbb 50%, #c9b199 100%);
+            color: var(--dark-olive);
+        }
 
-{% block content %}
+        .page {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 24px;
+        }
 
-<div class="form-container glass">
-    <h1>Propose an Animal</h1>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 22px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+        .brand {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
 
-        <button class="btn-primary full">Submit Proposal</button>
-    </form>
+        .nav-links a {
+            margin-left: 16px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: rgba(65,72,51,0.7);
+            padding: 6px 10px;
+            border-radius: 999px;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(127,85,57,0.08);
+            color: var(--brown);
+        }
+
+        h1 {
+            margin: 12px 4px 8px;
+            font-size: 1.6rem;
+        }
+
+        .subtitle {
+            margin: 0 4px 20px;
+            font-size: 0.9rem;
+            color: rgba(65,72,51,0.75);
+        }
+
+        .form-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 18px;
+            padding: 20px 24px;
+            box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+            border: 1px solid rgba(127,85,57,0.08);
+        }
+
+        form p {
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(65,72,51,0.9);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(127,85,57,0.2);
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: rgba(255,255,255,0.9);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: rgba(65,72,51,0.8);
+        }
+
+        .btn-primary {
+            padding: 9px 18px;
+            border-radius: 999px;
+            border: none;
+            background: var(--brown);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--light-brown);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: rgba(65,72,51,0.8);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 720px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <header class="navbar">
+        <div class="brand">🐾 Proposer un animal</div>
+        <div class="nav-links">
+            <a href="/">Retour au catalogue</a>
+        </div>
+    </header>
+
+    <h1>Proposer un nouvel ami</h1>
+    <p class="subtitle">
+        Remplissez ce formulaire pour proposer un animal à l’adoption. Un administrateur validera votre demande.
+    </p>
+
+    <section class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-primary">Envoyer la proposition</button>
+        </form>
+        <p class="note">
+            ℹ️ Votre proposition aura le statut <strong>pending</strong> et ne sera visible dans le catalogue
+            qu’après validation par un administrateur.
+        </p>
+    </section>
+
+    <a href="/" class="back-link">← Retour au catalogue</a>
+
 </div>
 
-{% endblock %}
+</body>
+</html>

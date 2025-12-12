@@ -139,4 +139,4 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Media files (Uploaded photos)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-DEV_MODE = False
+DEV_MODE = True

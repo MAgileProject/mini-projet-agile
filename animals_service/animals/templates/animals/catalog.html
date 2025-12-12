@@ -1,326 +1,301 @@
 {% extends "shared/base.html" %}
-{% block title %}Catalog{% endblock %}
+{% load static %}
+
+{% block title %}Catalogue des Animaux{% endblock %}
 
 {% block content %}
-
 <style>
-/* ===================== COLOR PALETTE ===================== */
-:root {
-    --brown: #7F5539;
-    --light-brown: #A68A64;
-    --cream: #EDE0D4;
-    --olive: #656D4A;
-    --dark-olive: #414833;
 
-    --glass-white: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.15);
-
-    --radius: 14px;
-    --transition: 0.25s ease;
-}
-
-/* ===================== GLOBAL ===================== */
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    color: var(--dark-olive);
-}
-
-/* Shared glass container */
-.glass {
-    background: var(--glass-white);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius);
-    padding: 20px;
-    border: 1px solid var(--glass-border);
-}
-
-/* ===================== LAYOUT ===================== */
-/* Default layout: NO detail panel */
-.catalog-shell {
+/* ====== PAGE LAYOUT ====== */
+.catalog-container {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 20px;
-    padding: 30px;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
 }
 
-/* When detail panel appears */
-.catalog-shell.detail-open {
-    grid-template-columns: 200px 1fr 360px;
+/* ====== FLOATING GLASS EFFECT ====== */
+.glass {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(14px);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* ===================== FILTER PANEL ===================== */
+/* ====== FILTER PANEL ====== */
 .filter-panel {
-    padding: 18px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.30);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.45);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 90px;
 }
 
 .filter-panel h3 {
-    margin-top: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--brown);
+    margin-bottom: 12px;
+    color: #414833;
 }
 
 .filter-panel label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-top: 12px;
     display: block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #656D4A;
 }
 
 .filter-panel input,
 .filter-panel select {
     width: 100%;
+    padding: 8px;
     margin-top: 4px;
-    padding: 8px 10px;
-    border-radius: var(--radius);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(0,0,0,0.15);
-    font-size: 0.85rem;
-    background: white;
+    backdrop-filter: blur(6px);
 }
 
+/* Search Btn */
 .filter-panel button {
-    margin-top: 14px;
-    padding: 10px;
     width: 100%;
-    border-radius: var(--radius);
+    margin-top: 18px;
+    padding: 10px;
+    border-radius: 10px;
     border: none;
-    background: var(--brown);
+    background: rgba(127, 85, 57, 0.85);
     color: white;
-    font-size: 0.9rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: var(--transition);
+    transition: 0.2s;
+    backdrop-filter: blur(5px);
 }
 
 .filter-panel button:hover {
-    background: var(--light-brown);
+    background: rgba(166, 138, 100, 0.9);
 }
 
-/* ===================== ANIMAL GRID ===================== */
+/* ====== CARDS ====== */
 .animals-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* EXACT 3 per row */
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
 }
 
 .card {
-    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 18px;
     overflow: hidden;
-    background: white;
-    border: 1px solid rgba(0,0,0,0.05);
-    transition: var(--transition);
+    backdrop-filter: blur(16px);
+    transition: 0.25s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.10);
 }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    transform: scale(1.03);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.16);
 }
 
 .animal-photo {
     width: 100%;
-    height: 170px;
+    height: 190px;
     object-fit: cover;
 }
 
-.card-content {
-    padding: 15px;
-}
-
-.card h3 {
-    margin: 0 0 6px 0;
-}
-
-.tag {
-    color: var(--olive);
-    font-size: 0.85rem;
-}
-
-.status {
-    font-size: 0.75rem;
-    margin-top: 8px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    display: inline-block;
-}
-
-.status.available { background: rgba(101, 109, 74, 0.15); color: var(--olive); }
-.status.reserved { background: rgba(255, 200, 0, 0.15); color: #b68a00; }
-.status.adopted  { background: rgba(127, 85, 57, 0.15); color: var(--brown); }
-
-/* Meet button */
+/* Meet Button */
 .view-btn {
-    margin-top: 12px;
-    width: 100%;
-    padding: 10px;
-    border-radius: var(--radius);
-    border: 1px solid var(--brown);
-    background: transparent;
-    color: var(--brown);
-    cursor: pointer;
-    transition: var(--transition);
+    display: block;
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(127, 85, 57, 0.6);
+    color: #7F5539;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(6px);
+    text-align: center;
+    text-decoration: none;
+    transition: 0.2s;
+    font-size: 0.9rem;
 }
 
 .view-btn:hover {
-    background: var(--brown);
-    color: white;
+    background: rgba(127, 85, 57, 0.15);
 }
 
-/* ===================== DETAIL PANEL ===================== */
+/* ====== FLOATING SIDE PANEL ====== */
 .detail-panel {
-    border-radius: var(--radius);
-    background: white;
-    padding: 20px;
-    border: 1px solid rgba(0,0,0,0.1);
-    height: fit-content;
-    position: sticky;
-    top: 30px;
+    position: fixed;
+    top: 0;
+    right: -450px; /* hidden */
+    width: 400px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.45);
+    border-left: 1px solid rgba(255,255,255,0.45);
+    backdrop-filter: blur(22px);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.12);
+    overflow-y: auto;
+    padding: 20px 24px;
+    transition: right 0.35s ease;
+    z-index: 3000;
+    border-radius: 25px 0 0 25px;
+}
+
+/* Open panel on :target */
+.detail-panel:target {
+    right: 0;
 }
 
 .detail-panel img {
     width: 100%;
-    border-radius: var(--radius);
-    height: 220px;
-    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
 }
 
-.detail-panel h2 {
-    margin: 15px 0 5px 0;
+/* Close button */
+.close-panel {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    font-size: 28px;
+    text-decoration: none;
+    color: #7F5539;
+    font-weight: bold;
+    background: rgba(255,255,255,0.45);
+    padding: 4px 10px;
+    border-radius: 50%;
+    backdrop-filter: blur(6px);
 }
 
-.detail-info {
-    font-size: 0.9rem;
-    color: var(--olive);
-}
-
-.detail-desc {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: var(--dark-olive);
-}
-
+/* Adopt button */
 .adopt-btn {
-    margin-top: 15px;
-    padding: 12px;
-    width: 100%;
-    border: none;
-    border-radius: var(--radius);
-    background: var(--olive);
+    display: block;
+    padding: 14px;
+    background: rgba(127, 85, 57, 0.9);
     color: white;
-    cursor: pointer;
-    transition: var(--transition);
+    text-align: center;
+    border-radius: 14px;
+    text-decoration: none;
+    margin-top: 20px;
+    font-size: 1rem;
+    transition: 0.2s;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.1);
 }
 
 .adopt-btn:hover {
-    background: var(--dark-olive);
+    background: rgba(166, 138, 100, 1);
 }
 
-/* ===================== RESPONSIVE ===================== */
-@media (max-width: 1100px) {
-    .animals-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 750px) {
-    .catalog-shell,
-    .catalog-shell.detail-open {
-        grid-template-columns: 1fr;
-    }
-
-    .detail-panel {
-        position: static;
-        margin-top: 20px;
-    }
+.disabled-btn {
+    padding: 14px;
+    background: rgba(100,100,100,0.4);
+    color: white;
+    text-align: center;
+    border-radius: 14px;
+    margin-top: 20px;
+    font-size: 1rem;
+    backdrop-filter: blur(6px);
 }
 
 </style>
 
-<div class="catalog-shell" {% if selected_animal %}class="detail-open"{% endif %}>
 
-    <!-- ========== FILTER PANEL (small) ========== -->
+<!-- ======================= PAGE ======================= -->
+
+<div class="catalog-container">
+
+    <!-- FILTERS -->
     <aside class="filter-panel">
-        <h3>🔎 Filters</h3>
+        <h3>🔎 Filter Animals</h3>
 
         <form method="GET">
             <label>Keyword</label>
-            <input type="text" name="q" value="{{ request.GET.q }}">
+            <input type="text" name="q" placeholder="Search...">
 
             <label>Type</label>
             <select name="type">
                 <option value="">Any</option>
-                <option value="Dog" {% if request.GET.type == "Dog" %}selected{% endif %}>Dog</option>
-                <option value="Cat" {% if request.GET.type == "Cat" %}selected{% endif %}>Cat</option>
+                <option>Dog</option>
+                <option>Cat</option>
+                <option>Bird</option>
+                <option>Rabbit</option>
+                <option>Other</option>
             </select>
 
             <label>Age</label>
-            <input type="number" name="age" value="{{ request.GET.age }}">
+            <input type="number" name="age">
 
             <label>Location</label>
-            <input type="text" name="location" value="{{ request.GET.location }}">
+            <input type="text" name="location">
 
             <label>Vaccinated</label>
             <select name="vaccinated">
                 <option value="">Any</option>
-                <option value="true" {% if request.GET.vaccinated == "true" %}selected{% endif %}>Yes</option>
-                <option value="false" {% if request.GET.vaccinated == "false" %}selected{% endif %}>No</option>
+                <option>true">Yes</option>
+                <option>false">No</option>
             </select>
 
-            <div class="filter-actions">
-                <button class="btn-small-primary">Search</button>
-                <a href="{% url 'client_propose_animal' %}" class="btn-secondary-light">
-                    ➕ Propose
-                </a>
-            </div>
+            <button>Search</button>
         </form>
+
+        <hr style="margin:20px 0; opacity:0.3;">
+
+        <a href="{% url 'client_propose_animal' %}" 
+           class="adopt-btn" 
+           style="text-align:center; display:block;">
+             Propose an Animal
+        </a>
     </aside>
 
-    <!-- ========== ANIMALS LIST ========== -->
-    <section class="catalog-main">
-        <div class="catalog-header">
-            <h1>Find a Friend ❤️</h1>
-        </div>
+    <!-- ANIMAL GRID -->
+    <section>
+        <h1 class="page-title">Find a Friend ❤️</h1>
 
         <div class="animals-grid">
             {% for a in animals %}
-                <article class="card">
-                    <img src="{{ a.photo_url }}" alt="{{ a.name }}">
-                    <div class="card-content">
-                        <h3>{{ a.name }}</h3>
-                        <p class="card-sub">{{ a.type }} • {{ a.age }} years</p>
+            <div class="card">
+                <img src="{{ a.photo_url }}" class="animal-photo">
 
-                        <a href="?animal_id={{ a.id }}" class="view-btn">
-                            🤍 Meet {{ a.name }}
-                        </a>
-                    </div>
-                </article>
+                <div class="card-content">
+                    <h3>{{ a.name }}</h3>
+                    <p>{{ a.type }} • {{ a.age }} yrs</p>
+
+                    <a href="#animal-{{ a.id }}" class="view-btn">
+                        🤍 Meet {{ a.name }}
+                    </a>
+                </div>
+            </div>
             {% endfor %}
         </div>
     </section>
-
-    <!-- ========== DETAIL PANEL (hidden until selected) ========== -->
-    <aside class="detail-panel-wrapper">
-        {% if selected_animal %}
-            <img class="detail-photo" src="{{ selected_animal.photo_url }}">
-
-            <div class="detail-heading">
-                <h2>{{ selected_animal.name }}</h2>
-            </div>
-
-            <p class="detail-about-text">{{ selected_animal.description|default:"No description." }}</p>
-
-            <a class="btn-adopt"
-               href="http://adoption-service:8003/adoption/create/?animal_id={{ selected_animal.id }}">
-                🤍 Adopt {{ selected_animal.name }}
-            </a>
-
-            <br>
-            <a href="{% url 'catalog' %}" class="btn-back">← Back</a>
-
-        {% else %}
-            <!-- NOTHING APPEARS HERE, COMPLETELY EMPTY -->
-        {% endif %}
-    </aside>
-
 </div>
+
+<!-- ============ DETAIL PANELS FOR EACH ANIMAL ============ -->
+{% for a in animals %}
+<div id="animal-{{ a.id }}" class="detail-panel">
+
+    <a href="#" class="close-panel">×</a>
+
+    <img src="{{ a.photo_url }}">
+
+    <h2>{{ a.name }}</h2>
+    <p><strong>Type:</strong> {{ a.type }}</p>
+    <p><strong>Age:</strong> {{ a.age }} years</p>
+    <p><strong>Location:</strong> {{ a.location }}</p>
+
+    <p style="margin-top:15px;">{{ a.description }}</p>
+
+    {% if a.status == "available" %}
+        <a href="http://adoption-service:8003/adoption/create/?animal_id={{ a.id }}"
+           class="adopt-btn">
+            🤍 Adopt {{ a.name }}
+        </a>
+    {% else %}
+        <div class="disabled-btn">{{ a.status|title }}</div>
+    {% endif %}
+</div>
+{% endfor %}
 
 {% endblock %}

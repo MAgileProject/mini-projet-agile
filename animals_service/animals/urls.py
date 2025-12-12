@@ -24,4 +24,8 @@ urlpatterns = [
     # Admin API
     path("api/admin/animals/<int:pk>/approve/", views.approve_animal_api),
     path("api/admin/animals/<int:pk>/reject/", views.reject_animal_api),
+# Admin filtered lists
+path("admin/reserved/", views.admin_reserved_animals, name="admin_reserved_animals"),
+path("admin/adopted/", views.admin_adopted_animals, name="admin_adopted_animals"),
+
 ]

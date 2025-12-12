@@ -208,3 +208,21 @@ def admin_edit_animal(request, pk):
         form = AnimalForm(instance=animal)
 
     return render(request, "animals/admin_edit.html", {"form": form, "animal": animal})
+
+
+def admin_reserved_animals(request):
+    if not is_admin(request):
+        return redirect("catalog")
+
+    animals = Animal.objects.filter(status="reserved")
+    return render(request, "animals/admin_reserved.html", {"animals": animals})
+
+
+def admin_adopted_animals(request):
+    if not is_admin(request):
+        return redirect("catalog")
+
+    animals = Animal.objects.filter(status="adopted")
+    return render(request, "animals/admin_adopted.html", {"animals": animals})
+
+

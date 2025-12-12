@@ -1,41 +1,359 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animals Admin Dashboard</title>
+    <style>
+        :root {
+            --brown: #7F5539;
+            --light-brown: #A68A64;
+            --cream: #EDE0D4;
+            --olive: #656D4A;
+            --dark-olive: #414833;
+            --muted-olive: rgba(101, 109, 74, 0.8);
+            --muted-brown: rgba(127, 85, 57, 0.85);
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 18px 45px rgba(33, 37, 26, 0.18);
+            --transition: all 0.2s ease;
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'animals/css/style.css' %}">
-{% endblock %}
-{% block title %}Admin Dashboard{% endblock %}
+            --status-reserved-bg: rgba(130, 119, 190, 0.12);
+            --status-reserved-border: rgba(130, 119, 190, 0.45);
+            --status-reserved-text: #5b4a9b;
 
-{% block content %}
+            --status-adopted-bg: rgba(140, 184, 152, 0.18);
+            --status-adopted-border: rgba(140, 184, 152, 0.46);
+            --status-adopted-text: #3e5f4c;
 
-<h1 class="page-title">Admin Dashboard</h1>
+            --status-pending-bg: rgba(198, 148, 71, 0.10);
+            --status-pending-border: rgba(198, 148, 71, 0.45);
+            --status-pending-text: #7A5B2D;
+        }
 
-<div class="admin-dashboard">
+        * {
+            box-sizing: border-box;
+        }
 
-    <div class="stat-card glass">
-        <h2>Total Animals</h2>
-        <p>{{ stats.total }}</p>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+            background: radial-gradient(circle at top left, #EDE0D4 0, #D8C3A5 35%, #B08968 80%);
+            color: var(--dark-olive);
+        }
+
+        .admin-shell {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top bar */
+        .admin-topbar {
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(16px);
+            background: linear-gradient(90deg,
+                    rgba(248, 244, 239, 0.92),
+                    rgba(237, 224, 212, 0.90),
+                    rgba(166, 138, 100, 0.16));
+            border-bottom: 1px solid rgba(65, 72, 51, 0.16);
+        }
+
+        .admin-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--dark-olive);
+        }
+
+        .admin-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(127, 85, 57, 0.08);
+            border: 1px solid rgba(127, 85, 57, 0.25);
+            color: var(--brown);
+        }
+
+        .admin-topbar-right a {
+            text-decoration: none;
+            font-size: 0.85rem;
+            color: var(--muted-olive);
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .admin-topbar-right a:hover {
+            border-color: rgba(65, 72, 51, 0.2);
+            background: rgba(248, 244, 239, 0.85);
+            color: var(--dark-olive);
+        }
+
+        /* Main layout */
+        .admin-main {
+            flex: 1;
+            padding: 26px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .admin-inner {
+            width: 100%;
+            max-width: 1100px;
+            background: radial-gradient(circle at top left,
+                        rgba(253, 250, 245, 0.96),
+                        rgba(237, 224, 212, 0.94));
+            border-radius: 24px;
+            padding: 26px 26px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(127, 85, 57, 0.18);
+            backdrop-filter: blur(18px);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            letter-spacing: -0.03em;
+            color: var(--dark-olive);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-header p {
+            margin: 4px 0 0;
+            font-size: 0.9rem;
+            color: var(--muted-olive);
+        }
+
+        .admin-header-right {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--muted-olive);
+        }
+
+        .pill-soft {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(164, 145, 119, 0.14);
+            border: 1px solid rgba(164, 145, 119, 0.32);
+            margin-bottom: 6px;
+        }
+
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            position: relative;
+            padding: 16px 14px;
+            border-radius: 16px;
+            background: linear-gradient(145deg,
+                        rgba(255, 255, 255, 0.96),
+                        rgba(237, 224, 212, 0.94));
+            border: 1px solid rgba(127, 85, 57, 0.18);
+            box-shadow: 0 12px 30px rgba(90, 61, 42, 0.10);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 40px rgba(87, 62, 45, 0.16);
+            border-color: rgba(127, 85, 57, 0.4);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted-olive);
+        }
+
+        .stat-number {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.04em;
+            color: var(--dark-olive);
+        }
+
+        .stat-foot {
+            font-size: 0.78rem;
+            color: rgba(101, 109, 74, 0.9);
+        }
+
+        .stat-badge {
+            position: absolute;
+            top: 11px;
+            right: 12px;
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--muted-brown);
+            border: 1px solid rgba(127, 85, 57, 0.32);
+        }
+
+        /* Status badge styling depends on the palette */
+        .stat-pill-available { 
+            background: var(--status-available-bg);
+            border: 1px solid var(--status-available-border);
+            color: var(--status-available-text);
+        }
+        .stat-pill-pending { 
+            background: var(--status-pending-bg);
+            border: 1px solid var(--status-pending-border);
+            color: var(--status-pending-text);
+        }
+        .stat-pill-reserved { 
+            background: var(--status-reserved-bg);
+            border: 1px solid var(--status-reserved-border);
+            color: var(--status-reserved-text);
+        }
+        .stat-pill-adopted {
+            background: var(--status-adopted-bg);
+            border: 1px solid var(--status-adopted-border);
+            color: var(--status-adopted-text);
+        }
+
+        /* Below cards */
+        .admin-actions-row {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brown), #9C6644);
+            color: #FDF8F1;
+            padding: 9px 16px;
+            border-radius: 999px;
+            text-decoration: none;
+            box-shadow: 0 8px 18px rgba(127, 85, 57, 0.35);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            border-radius: 999px;
+            padding: 8px 14px;
+            border: 1px solid rgba(65, 72, 51, 0.26);
+            background: rgba(250, 245, 239, 0.8);
+            color: var(--dark-olive);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+    </style>
+</head>
+<body>
+<div class="admin-shell">
+
+    <div class="admin-topbar">
+        <div class="admin-topbar-left">
+            <span>🐾 Animals Service</span>
+            <span class="admin-badge">Admin area</span>
+        </div>
+        <div class="admin-topbar-right">
+            <a href="{% url 'catalog' %}">← Back to catalog</a>
+        </div>
     </div>
 
-    <div class="stat-card glass">
-        <h2>Pending</h2>
-        <p>{{ stats.pending }}</p>
-    </div>
+    <main class="admin-main">
+        <section class="admin-inner">
 
-    <div class="stat-card glass">
-        <h2>Available</h2>
-        <p>{{ stats.available }}</p>
-    </div>
+            <header class="admin-header">
+                <div>
+                    <h1>Animals dashboard</h1>
+                    <p>Overview of your adoption catalog and pending validations.</p>
+                </div>
+                <div class="admin-header-right">
+                    <div class="pill-soft">
+                        <span>Catalog size</span>
+                        <strong>{{ total_animals }}</strong>
+                    </div>
+                    <div>Pending proposals: <strong>{{ pending_animals }}</strong></div>
+                </div>
+            </header>
 
-    <div class="stat-card glass">
-        <h2>Adopted</h2>
-        <p>{{ stats.adopted }}</p>
-    </div>
+            <div class="stats-grid">
 
+                <!-- ALL animals -->
+                <a href="{% url 'admin_manage_animals' %}" class="stat-card">
+                    <div class="stat-badge">All</div>
+                    <span class="stat-label">Total animals</span>
+                    <span class="stat-number">{{ total_animals }}</span>
+                    <span class="stat-foot">Full catalog currently in the system.</span>
+                </a>
+
+                <!-- PENDING -->
+                <a href="{% url 'admin_pending' %}" class="stat-card">
+                    <div class="stat-badge stat-pill-pending">Review</div>
+                    <span class="stat-label">Pending approval</span>
+                    <span class="stat-number">{{ pending_animals }}</span>
+                    <span class="stat-foot">Submitted by users, waiting for your decision.</span>
+                </a>
+
+                <!-- ADOPTED -->
+                <a href="{% url 'admin_adopted_animals' %}" class="stat-card">
+                    <div class="stat-badge stat-pill-adopted">Happy endings</div>
+                    <span class="stat-label">Adopted</span>
+                    <span class="stat-number">{{ adopted_animals }}</span>
+                    <span class="stat-foot">Animals already adopted.</span>
+                </a>
+
+            </div>
+
+            <div class="admin-actions-row">
+                <small>Use the cards above to quickly jump into management views.</small>
+                <div class="btn-row">
+                    <a href="{% url 'admin_manage_animals' %}" class="btn-primary">Manage all animals</a>
+                    <a href="{% url 'admin_pending' %}" class="btn-outline">Review pending proposals</a>
+                </div>
+            </div>
+
+        </section>
+    </main>
 </div>
-
-<div class="admin-actions">
-    <a class="btn-primary" href="/admin/manage/">Manage Animals</a>
-    <a class="btn-outline" href="/admin/pending/">Pending Proposals</a>
-</div>
-
-{% endblock %}
+</body>
+</html>
