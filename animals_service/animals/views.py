@@ -69,10 +69,18 @@ def catalog_view(request):
     if is_admin(request):
         return redirect("admin_dashboard")
 
-    # Only show approved animals
     animals = filter_animals(request).filter(status="available")
 
-    return render(request, "animals/catalog.html", {"animals": animals})
+    user_id = request.session.get("user_id", 1)  # dev fallback
+
+    return render(
+        request,
+        "animals/catalog.html",
+        {
+            "animals": animals,
+            "user_id": user_id,
+        }
+    )
 
 def animal_detail(request, pk):
     if is_admin(request):
