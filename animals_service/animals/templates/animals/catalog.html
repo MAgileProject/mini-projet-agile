@@ -287,14 +287,15 @@
 
     <p style="margin-top:15px;">{{ a.description }}</p>
 
-    {% if a.status == "available" %}
-        <a href="http://adoption-service:8003/adoption/create/?animal_id={{ a.id }}"
-           class="adopt-btn">
-            🤍 Adopt {{ a.name }}
-        </a>
-    {% else %}
-        <div class="disabled-btn">{{ a.status|title }}</div>
-    {% endif %}
+   {% if a.status == "available" and adoption_url %}
+<a href="{{ adoption_url }}/adoption/create/?animal_id={{ a.id }}&user_id={{ user_id }}"
+   class="adopt-btn">
+   🤍 Adopt {{ a.name }}
+</a>
+{% else %}
+<div class="disabled-btn">{{ a.status|title }}</div>
+{% endif %}
+
 </div>
 {% endfor %}
 

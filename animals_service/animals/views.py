@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from animals_service.utils import get_service_url
+
 from .models import Animal
 from .forms import AnimalForm
 from .serializers import AnimalSerializer
@@ -66,13 +68,15 @@ def filter_animals(request):
 # ============================
 
 def catalog_view(request):
-    if is_admin(request):
-        return redirect("admin_dashboard")
-
-    # Only show approved animals
     animals = filter_animals(request).filter(status="available")
 
-    return render(request, "animals/catalog.html", {"animals": animals})
+    adoption_url = get_service_url("adoption-service")
+
+    return render(request, "animals/catalog.html", {
+        "animals": animals,
+        "adoption_url": adoption_url,
+        "user_id": request.session.get("user_id"),
+    })
 
 def animal_detail(request, pk):
     if is_admin(request):
