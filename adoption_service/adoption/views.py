@@ -6,6 +6,12 @@ from .models import AdoptionRequest
 from adoption_service.utils import get_service_url
 from adoption.messaging.producer import publish_adoption
 
+from adoption_service.utils import get_service_url
+
+
+def redirect_to_login():
+    accounts_url = get_service_url("accounts-service")
+    return redirect(f"{accounts_url}/login/")
 
 # -------------------------------------------------------------------
 # HOME PAGE
@@ -22,7 +28,10 @@ def create_request(request):
         return render(request, "client/form_adoption.html")
 
     if request.method == "POST":
-        user_id = request.POST.get("user_id")
+        user_id = request.session.get("user_id")
+        if not user_id:
+             return redirect("login")  # redirection vers accounts-service
+
         animal_id = request.POST.get("animal_id")
         appointment_id = request.POST.get("appointment_id")
 
