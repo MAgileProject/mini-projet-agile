@@ -154,3 +154,5 @@ STATICFILES_DIRS = [
     BASE_DIR / "../ui_service/static",
     BASE_DIR / "adoption/static",
 ]
+
+TRAEFIK_BASE_URL = "http://localhost:80"

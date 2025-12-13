@@ -201,7 +201,7 @@ def check_adoption(request, user_id, animal_id):
     
 
 from adoption_service.utils import get_service_url
-
+from django.conf import settings
 def go_to_notifications(request, user_id):
     # 1. Obtenir l’URL du microservice via Consul
     notif_url = get_service_url("notifications-service")
@@ -210,4 +210,6 @@ def go_to_notifications(request, user_id):
         return JsonResponse({"error": "Notifications service not found in Consul"}, status=500)
 
     # 2. Rediriger vers notifications-service
-    return redirect(f"{notif_url}/notifications/user/{user_id}/")
+    return redirect(
+        f"{settings.TRAEFIK_BASE_URL}/notifications/user/{user_id}/"
+    )

@@ -153,3 +153,5 @@ SESSION_COOKIE_SAMESITE = "Lax"
 # Required for local dev
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+
+TRAEFIK_BASE_URL = "http://localhost:80"

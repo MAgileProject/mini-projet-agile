@@ -1,11 +1,19 @@
 {
- "service": {
+  "service": {
     "name": "animals-service",
+    "id": "animals-service-1",
     "address": "127.0.0.1",
     "port": 8002,
-    "check": {
-      "http": "http://127.0.0.1:8002/",
-      "interval": "10s"
-    }
+    "tags": [
+      "traefik.enable=true",
+      "traefik.http.routers.animals.rule=PathPrefix(`/animals`)",
+      "traefik.http.routers.animals.entrypoints=web"
+    ],
+    "checks": [
+      {
+        "http": "http://127.0.0.1:8002/",
+        "interval": "10s"
+      }
+    ]
   }
 }
