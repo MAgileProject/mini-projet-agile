@@ -10,11 +10,12 @@
 
     <p class="lead">
         Your adoption request has been submitted successfully.<br>
-        Request ID: <strong>{{ request.id }}</strong>
+        Request ID: <strong>{{ adoption.id }}</strong>
     </p>
 
     <div class="mt-4">
-        <a href="/adoption/list/{{ request.user_id }}/" class="btn btn-primary btn-lg">
+        <!-- session-based -->
+        <a href="{% url 'my_adoptions' %}" class="btn btn-primary btn-lg">
             📄 View My Requests
         </a>
 

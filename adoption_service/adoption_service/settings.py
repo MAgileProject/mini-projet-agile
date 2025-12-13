@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
 ]
 
 ROOT_URLCONF = 'adoption_service.urls'
@@ -156,3 +157,11 @@ STATICFILES_DIRS = [
 ]
 
 TRAEFIK_BASE_URL = "http://localhost:80"
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_NAME = "shared_session"
+SESSION_COOKIE_DOMAIN = "127.0.0.1"
+SESSION_COOKIE_PATH = "/"
+
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"

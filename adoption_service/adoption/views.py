@@ -7,6 +7,7 @@ from adoption_service.utils import get_service_url
 from adoption.messaging.producer import publish_adoption
 
 from adoption_service.utils import get_service_url
+from .utils import get_current_user_id
 
 
 def redirect_to_login():
@@ -23,41 +24,47 @@ def home(request):
 # -------------------------------------------------------------------
 # CREATE ADOPTION REQUEST
 # -------------------------------------------------------------------
+
 def create_request(request):
+    # 🔐 ALWAYS get user from session
+    user_id = get_current_user_id(request)
+
+    if not user_id:
+        return redirect("http://127.0.0.1:8001/login/")
+
+
     # -------------------------
-    # GET : ouvrir le formulaire
+    # GET → show form
     # -------------------------
     if request.method == "GET":
-        user_id = request.GET.get("user_id")
         animal_id = request.GET.get("animal_id")
 
-        if not user_id:
-            return redirect("http://127.0.0.1:8001/login/")
+        if not animal_id:
+            return JsonResponse({"error": "Missing animal_id"}, status=400)
 
         return render(request, "client/form_adoption.html", {
-            "user_id": user_id,
             "animal_id": animal_id
         })
 
     # -------------------------
-    # POST : créer l’adoption
+    # POST → create adoption
     # -------------------------
     if request.method == "POST":
-        user_id = request.POST.get("user_id")
         animal_id = request.POST.get("animal_id")
 
-        if not user_id or not animal_id:
-            return JsonResponse({"error": "Missing data"}, status=400)
+        if not animal_id:
+            return JsonResponse({"error": "Missing animal_id"}, status=400)
 
-        AdoptionRequest.objects.create(
-            user_id=user_id,
+        adoption = AdoptionRequest.objects.create(
             animal_id=animal_id,
             status="pending"
         )
 
-        return render(request, "client/success_adoption.html")
-
-
+        return render(
+            request,
+            "client/success_adoption.html",
+            {"adoption": adoption}
+        )
 
 # -------------------------------------------------------------------
 # LIST USER REQUESTS

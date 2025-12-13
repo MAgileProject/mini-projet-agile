@@ -1,17 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Mes notifications{% endblock %}
 
 {% block content %}
-<h2 class="mb-3">📩 Mes Notifications</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">📫 Mes notifications</h2>
 
-{% if notifications %}
-<ul class="list-group">
-    {% for n in notifications %}
-    <li class="list-group-item">
-        <strong>{{ n.created_at|date:"Y-m-d H:i" }}</strong><br>
-        {{ n.message }}
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p class="text-muted">Aucune notification.</p>
-{% endif %}
+    {% if notifications %}
+        <ul class="list-group">
+            {% for n in notifications %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ n.message }}</strong><br>
+                        <small class="text-muted">{{ n.created_at }}</small>
+                    </div>
+
+                    {% if n.event == "adoption_approved" %}
+                        <span class="badge bg-success">✔ Approved</span>
+                    {% elif n.event == "adoption_rejected" %}
+                        <span class="badge bg-danger">✖ Rejected</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Info</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info">Aucune notification.</div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -16,7 +16,7 @@ urlpatterns = [
     # ---------------------------------------------
     # 👨‍💼 ADMIN ROUTES
     # ---------------------------------------------
-    path("admin/requests/", views.admin_list, name="admin_requests"),
+    path("admin/", views.admin_list, name="admin_requests"),
     path("admin/approve/<int:id>/", views.approve_request, name="approve_request"),
     path("admin/reject/<int:id>/", views.reject_request, name="reject_request"),
     path('adoptions/check/<int:user_id>/<int:animal_id>/', check_adoption),

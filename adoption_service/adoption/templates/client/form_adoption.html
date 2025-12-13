@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% extends "shared/base.html" %}
 {% block title %}Apply for Adoption{% endblock %}
 
@@ -18,7 +17,7 @@
     border-radius: 26px;
 
     <!-- 🔒 HIDDEN (VRAIMENT envoyés en POST) -->
-    <input type="hidden" name="user_id" value="{{ user_id }}">
+    
     <input type="hidden" name="animal_id" value="{{ animal_id }}">
 
     <!-- AFFICHAGE VISUEL -->
@@ -134,35 +133,28 @@
     {% endif %}
 
     <form method="POST" class="adoption-card">
-        {% csrf_token %}
+    {% csrf_token %}
 
-        <!-- USER ID -->
-        <div class="adoption-group">
-            <label>User ID</label>
-            <input type="number"
-                   name="user_id"
-                   required>
-        </div>
+    <div class="adoption-group">
+        <label>Animal ID</label>
+        <input type="number"
+               name="animal_id"
+               value="{{ animal_id }}"
+               readonly>
+    </div>
 
-        <!-- ANIMAL ID -->
-        <div class="adoption-group">
-            <label>Animal ID</label>
-            <input type="number"
-                   name="animal_id"
-                   value="{{ animal_id }}"
-                   readonly>
-        </div>
-
-        <!-- APPOINTMENT ID -->
+    <!-- APPOINTMENT ID -->
         <div class="adoption-group">
             <label>Appointment ID (optional)</label>
             <input type="number"
                    name="appointment_id">
         </div>
 
+        <input type="hidden" name="animal_id" value="{{ animal_id }}">
         <button class="adoption-submit">
             Submit Adoption Request
         </button>
+        
     </form>
 
 </div>

@@ -1,89 +1,48 @@
-from rest_framework import viewsets, status
-from rest_framework.decorators import action, api_view
-from rest_framework.response import Response
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+import requests
+
 from .models import Notification
-from django.shortcuts import render
-from .serializers import NotificationSerializer
-from django.shortcuts import render
-from .models import Notification
-from django.shortcuts import render
 
-def notifications_home(request):
-    return render(request, "notifications/home.html")
 
-class NotificationViewSet(viewsets.ModelViewSet):
+def get_user_id_from_accounts(request):
     """
-    /notifications/api/notifications/
-    /notifications/api/notifications/<id>/
+    Calls accounts_service to know who is logged in.
+    Uses cookies to forward session.
     """
-    queryset = Notification.objects.all().order_by("-created_at")
-    serializer_class = NotificationSerializer
-
-    @action(detail=False, methods=["get"])
-    def my(self, request):
-        """
-        /notifications/api/notifications/my/
-        Retourne les notifs du user courant (X-User-ID)
-        """
-        user_id = request.headers.get("X-User-ID")
-        if not user_id:
-            return Response(
-                {"detail": "Missing X-User-ID header"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        qs = Notification.objects.filter(user_id=user_id).order_by("-created_at")
-        serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=["post"])
-    def mark_read(self, request, pk=None):
-        """
-        /notifications/api/notifications/<id>/mark_read/
-        """
-        notif = self.get_object()
-        notif.read = True
-        notif.save()
-        return Response({"status": "ok"})
-
-
-def my_notifications_html(request):
-    """
-    Vue HTML pour afficher les notifs d'un user.
-    Utilise X-User-ID (fourni par accounts_service / gateway).
-    """
-    user_id = request.headers.get("X-User-ID")
-    if not user_id:
-        return render(request, "notifications/error.html", {
-            "message": "Missing X-User-ID header.",
-        })
-
-    notifications = Notification.objects.filter(user_id=user_id).order_by("-created_at")
-
-    return render(request, "notifications/list.html", {
-        "notifications": notifications,
-    })
-
-def api_notifications(request):
-    """
-    Return all notifications in JSON format (for testing).
-    """
-    data = list(Notification.objects.values())
-    return JsonResponse(data, safe=False)
+    try:
+        r = requests.get(
+            "http://127.0.0.1:8001/api/me/",
+            cookies=request.COOKIES,
+            timeout=3
+        )
+        if r.status_code != 200:
+            return None
+        return r.json().get("id")
+    except Exception as e:
+        print("ERROR calling accounts_service /api/me/:", e)
+        return None
 
 
 def my_notifications(request):
-    return render(request, "notifications/my_notifications.html")
+    user_id = request.session.get("user_id")
 
-def user_notifications(request, user_id):
+    if not user_id:
+        return redirect("http://127.0.0.1:8001/login/")
+
+    return redirect("user_notifications", user_id=user_id)
+
+
+def user_notifications(request):
+    """
+    Show notifications for the currently logged-in user
+    (user_id stored in session by accounts_service)
+    """
+    user_id = request.session.get("user_id")
+
+    
+
     notifications = Notification.objects.filter(
         user_id=user_id
     ).order_by("-created_at")
 
-    return render(
-        request,
-        "notifications/user_notifications.html",
-        {"notifications": notifications}
-    )
+    return render(request, "notifications/user_notifications.html", {"notifications": notifications})

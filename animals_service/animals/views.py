@@ -93,13 +93,13 @@ def admin_dashboard(request):
     pending_animals = Animal.objects.filter(status="pending").count()
     adopted_animals = Animal.objects.filter(status="adopted").count()
 
-    form = AnimalForm()   # 👈 THIS WAS MISSING
+    form = AnimalForm()   
 
     return render(request, "animals/admin_dashboard.html", {
         "total_animals": total_animals,
         "pending_animals": pending_animals,
         "adopted_animals": adopted_animals,
-        "form": form,      # 👈 PASS IT TO TEMPLATE
+        "form": form,     
     })
 
 

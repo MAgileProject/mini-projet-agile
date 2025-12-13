@@ -387,10 +387,11 @@
         {{ a.status|title }}
     </span>
 {% if a.status == "available" %}
-        <a href="http://127.0.0.1:8003/adoption/create/?animal_id={{ a.id }}&user_id={{ user_id }}"
-           class="adopt-btn">
-            🤍 Adopt {{ a.name }}
-        </a>
+        <a href="http://127.0.0.1:80/adoption/create/?animal_id={{ a.id }}"
+   class="adopt-btn">
+   🤍 Adopt {{ a.name }}
+</a>
+
     {% else %}
         <div class="disabled-btn">
             {{ a.status|title }}

@@ -7,4 +7,5 @@ def home_redirect(request):
 urlpatterns = [
     path("", home_redirect),  # redirect root to notifications
     path("notifications/", include("notifications.urls")),
+    
 ]
