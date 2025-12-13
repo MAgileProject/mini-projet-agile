@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Login – Accounts</title>
+
     <style>
         :root {
-            --bg-light: #FAF3E7;
-            --bg-mid: #F3E6D8;
-            --bg-deep: #E8D3BF;
-            --card-bg: rgba(255, 255, 255, 0.75);
             --accent: #B08968;
             --accent-dark: #A67C5B;
-            --danger: #CC3D3D;
+
             --text-main: #463F3A;
             --text-soft: #6B6058;
-            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.12);
-            --radius-card: 20px;
-            --radius-pill: 999px;
+
+            --danger: #CC3D3D;
+
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.35);
+
+            --shadow-soft: 0 30px 60px rgba(0, 0, 0, 0.18);
+
+            --radius-lg: 26px;
+            --radius-md: 18px;
         }
 
         * {
@@ -26,41 +30,122 @@
         }
 
         body {
+            height: 100vh;
             font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top,
-                var(--bg-light) 0%,
-                var(--bg-mid) 45%,
-                var(--bg-deep) 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             color: var(--text-main);
+
+            /* ===== BACKGROUND IMAGE ===== */
+            background:
+                linear-gradient(
+                    rgba(250, 243, 231, 0.55),
+                    rgba(232, 211, 191, 0.55)
+                ),
+                url("https://images.unsplash.com/photo-1548199973-03cce0bbc87b");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .page {
+        /* ================= LAYOUT ================= */
+        .layout {
             width: 100%;
-            max-width: 420px;
-            padding: 24px;
+            max-width: 1200px;
+            height: 680px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        /* ================= LEFT SIDE ================= */
+        .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 13px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .headline {
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 18px;
+        }
+
+        .description {
+            font-size: 16px;
+            color: var(--text-soft);
+            max-width: 480px;
+            margin-bottom: 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+            max-width: 520px;
+        }
+
+        .feature {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .feature h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: var(--accent-dark);
+        }
+
+        .feature p {
+            font-size: 13px;
+            color: var(--text-soft);
+            line-height: 1.4;
+        }
+
+        /* ================= RIGHT SIDE (LOGIN) ================= */
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: var(--radius-card);
-            padding: 28px 26px 26px;
+            width: 100%;
+            max-width: 380px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 34px 32px;
             box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--glass-border);
         }
 
         .logo {
-            font-weight: 700;
-            letter-spacing: 0.08em;
             font-size: 13px;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             color: var(--accent);
-            margin-bottom: 4px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .title {
@@ -76,35 +161,35 @@
         }
 
         form p {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         label {
+            display: block;
             font-size: 13px;
             color: var(--text-soft);
             margin-bottom: 4px;
-            display: block;
         }
 
         input {
             width: 100%;
-            padding: 9px 11px;
+            padding: 10px 12px;
             border-radius: 12px;
             border: 1px solid rgba(176, 137, 104, 0.35);
             background: rgba(255, 255, 255, 0.9);
-            outline: none;
             font-size: 14px;
+            outline: none;
         }
 
         input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 1px rgba(176, 137, 104, 0.35);
+            box-shadow: 0 0 0 1px rgba(176, 137, 104, 0.45);
         }
 
         .btn {
             width: 100%;
-            margin-top: 8px;
-            padding: 11px 14px;
+            margin-top: 10px;
+            padding: 12px;
             border-radius: 14px;
             border: none;
             background: var(--accent);
@@ -112,7 +197,6 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            letter-spacing: 0.02em;
         }
 
         .btn:hover {
@@ -120,16 +204,16 @@
         }
 
         .bottom {
-            margin-top: 16px;
-            font-size: 13px;
+            margin-top: 18px;
             text-align: center;
+            font-size: 13px;
             color: var(--text-soft);
         }
 
         .link {
             color: var(--accent);
-            text-decoration: none;
             font-weight: 600;
+            text-decoration: none;
         }
 
         .link:hover {
@@ -137,42 +221,86 @@
         }
 
         .alert {
-            background: rgba(255, 214, 196, 0.9);
+            background: rgba(255, 220, 200, 0.95);
             border-left: 4px solid var(--danger);
-            padding: 9px 10px;
+            padding: 10px 12px;
             border-radius: 10px;
             font-size: 13px;
-            margin-bottom: 12px;
-            color: var(--text-main);
+            margin-bottom: 14px;
         }
     </style>
 </head>
 
 <body>
-<div class="page">
-    <div class="card">
 
-        <div class="logo">Accounts Service</div>
-        <div class="title">Welcome</div>
-        <div class="subtitle">Sign in to manage your profile.</div>
+<div class="layout">
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+    <!-- LEFT SIDE -->
+    <section class="left">
+        <div class="brand">Animal Adoption Platform</div>
 
-        <form method="post" autocomplete="off">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn" type="submit">Login</button>
-        </form>
+        <h1 class="headline">
+            Every animal<br>
+            deserves a home.
+        </h1>
 
-        <p class="bottom">
-            Don’t have an account?
-            <a class="link" href="/register/">Create one</a>
+        <p class="description">
+            Discover animals available for adoption, follow the adoption
+            process, and receive notifications — all in one secure platform.
         </p>
-    </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🐾 Animal Catalog</h3>
+                <p>Browse animals with detailed profiles and photos.</p>
+            </div>
+
+            <div class="feature">
+                <h3>📄 Adoption Requests</h3>
+                <p>Submit and track adoption requests step by step.</p>
+            </div>
+
+            <div class="feature">
+                <h3>🔔 Notifications</h3>
+                <p>Get notified when your adoption status changes.</p>
+            </div>
+
+            <div class="feature">
+                <h3>🔐 Secure Accounts</h3>
+                <p>Your personal data is protected and private.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RIGHT SIDE -->
+    <section class="right">
+        <div class="card">
+
+            <div class="logo">Accounts Service</div>
+            <div class="title">Welcome back</div>
+            <div class="subtitle">Sign in to continue.</div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" autocomplete="off">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn" type="submit">Login</button>
+            </form>
+
+            <p class="bottom">
+                Don’t have an account?
+                <a class="link" href="/register/">Create one</a>
+            </p>
+
+        </div>
+    </section>
+
 </div>
+
 </body>
 </html>

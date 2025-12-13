@@ -87,13 +87,18 @@ def client_propose_animal(request):
 # ============================
 
 def admin_dashboard(request):
-    stats = {
-        "total_animals": Animal.objects.count(),
-        "pending_animals": Animal.objects.filter(status="pending").count(),
-        "adopted_animals": Animal.objects.filter(status="adopted").count(),
-    }
+    total_animals = Animal.objects.count()
+    pending_animals = Animal.objects.filter(status="pending").count()
+    adopted_animals = Animal.objects.filter(status="adopted").count()
 
-    return render(request, "animals/admin_dashboard.html", stats)
+    form = AnimalForm()   # 👈 THIS WAS MISSING
+
+    return render(request, "animals/admin_dashboard.html", {
+        "total_animals": total_animals,
+        "pending_animals": pending_animals,
+        "adopted_animals": adopted_animals,
+        "form": form,      # 👈 PASS IT TO TEMPLATE
+    })
 
 
 def admin_manage_animals(request):
@@ -105,10 +110,6 @@ def admin_pending(request):
     animals = Animal.objects.filter(status="pending")
     return render(request, "animals/admin_pending.html", {"animals": animals})
 
-
-def admin_reserved_animals(request):
-    animals = Animal.objects.filter(status="reserved")
-    return render(request, "animals/admin_reserved.html", {"animals": animals})
 
 
 def admin_adopted_animals(request):
@@ -207,16 +208,8 @@ def admin_reserved_animals(request):
     return render(request, "animals/admin_reserved.html", {"animals": animals})
 
 
-def admin_adopted_animals(request):
-    if not is_admin(request):
-        return redirect("catalog")
-
-    animals = Animal.objects.filter(status="adopted")
-    return render(request, "animals/admin_adopted.html", {"animals": animals})
 
 def admin_add_animal(request):
-    if not is_admin(request):
-        return redirect("catalog")
 
     if request.method == "POST":
         form = AnimalForm(request.POST)

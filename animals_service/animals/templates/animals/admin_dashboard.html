@@ -1,11 +1,11 @@
 {% extends "shared/admin_base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Animals Admin Dashboard</title>
-    <style>
+
+
+{% block title %}Animals Admin Dashboard{% endblock %}
+{% block content %}
+
+<style>
         :root {
             --brown: #7F5539;
             --light-brown: #A68A64;
@@ -50,56 +50,7 @@
             flex-direction: column;
         }
 
-        /* Top bar */
-        .admin-topbar {
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            backdrop-filter: blur(16px);
-            background: linear-gradient(90deg,
-                    rgba(248, 244, 239, 0.92),
-                    rgba(237, 224, 212, 0.90),
-                    rgba(166, 138, 100, 0.16));
-            border-bottom: 1px solid rgba(65, 72, 51, 0.16);
-        }
-
-        .admin-topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--dark-olive);
-        }
-
-        .admin-badge {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 3px 8px;
-            border-radius: 999px;
-            background: rgba(127, 85, 57, 0.08);
-            border: 1px solid rgba(127, 85, 57, 0.25);
-            color: var(--brown);
-        }
-
-        .admin-topbar-right a {
-            text-decoration: none;
-            font-size: 0.85rem;
-            color: var(--muted-olive);
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid transparent;
-            transition: var(--transition);
-        }
-
-        .admin-topbar-right a:hover {
-            border-color: rgba(65, 72, 51, 0.2);
-            background: rgba(248, 244, 239, 0.85);
-            color: var(--dark-olive);
-        }
-
+       
         /* Main layout */
         .admin-main {
             flex: 1;
@@ -289,6 +240,7 @@
         /* ================= ADD ANIMAL SLIDE PANEL ================= */
 
 .side-panel {
+    overflow: auto;
     border-radius: 32px 0 0 32px; /* more round */
     position: fixed;
     top: 0;
@@ -341,23 +293,23 @@
 .w-full {
     width: 100%;
 }
+.side-panel::-webkit-scrollbar {
+    width: 6px;
+}
 
+.side-panel::-webkit-scrollbar-thumb {
+    background: rgba(127, 85, 57, 0.4);
+    border-radius: 10px;
+}
+
+.side-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
 
 
     </style>
-</head>
-<body>
-<div class="admin-shell">
 
-    <div class="admin-topbar">
-        <div class="admin-topbar-left">
-            <span>🐾 Animals Service</span>
-            <span class="admin-badge">Admin area</span>
-        </div>
-        <div class="admin-topbar-right">
-            <a href="127.0.0.1:8002/">← Back to catalog</a>
-        </div>
-    </div>
+<div class="admin-shell">
 
     <main class="admin-main">
         <section class="admin-inner">
@@ -435,22 +387,49 @@
     <p>Published immediately (admin)</p>
 
     <form method="POST" action="{% url 'admin_add_animal' %}">
-        {% csrf_token %}
+    {% csrf_token %}
 
+    <div class="field">
+        <label>Name</label>
         {{ form.name }}
+    </div>
+
+    <div class="field">
+        <label>Type</label>
         {{ form.type }}
+    </div>
+
+    <div class="field">
+        <label>Breed</label>
         {{ form.breed }}
+    </div>
+
+    <div class="field">
+        <label>Age</label>
         {{ form.age }}
+    </div>
+
+    <div class="field">
+        <label>Location</label>
         {{ form.location }}
+    </div>
+
+    <div class="field">
+        <label>Description</label>
         {{ form.description }}
+    </div>
+
+    <div class="field">
+        <label>Photo URL</label>
         {{ form.photo_url }}
+    </div>
 
-        <button class="btn-primary w-full">
-            Save animal
-        </button>
-    </form>
+    <button class="btn-primary w-full">
+        Save animal
+    </button>
+</form>
+
 </div>
 
 </div>
-</body>
-</html>
+{% endblock %}

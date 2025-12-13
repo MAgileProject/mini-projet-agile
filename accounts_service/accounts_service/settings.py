@@ -145,3 +145,11 @@ SERVICE_ID = "accounts-service-1"
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'ChangeMe123!')
+SESSION_COOKIE_NAME = "adoption_session"
+SESSION_COOKIE_DOMAIN = "127.0.0.1"
+SESSION_COOKIE_PATH = "/"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+# Required for local dev
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False

@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Pending Animal Proposals</title>
+{% extends "shared/admin_base.html" %}
+{% load static %}
+
+
+{% block title %}Animals Admin Dashboard{% endblock %}
+{% block content %}
     <style>
         /* Re-use same style system as admin_manage for consistency */
         :root {
@@ -30,43 +31,6 @@
         }
 
         .admin-shell { min-height: 100vh; display: flex; flex-direction: column; }
-
-        .admin-topbar {
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            backdrop-filter: blur(16px);
-            background: linear-gradient(90deg,
-                    rgba(248, 244, 239, 0.92),
-                    rgba(237, 224, 212, 0.90),
-                    rgba(166, 138, 100, 0.16));
-            border-bottom: 1px solid rgba(65, 72, 51, 0.16);
-        }
-
-        .admin-topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .admin-topbar-right a {
-            text-decoration: none;
-            font-size: 0.85rem;
-            color: var(--muted-olive);
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid transparent;
-            transition: var(--transition);
-        }
-
-        .admin-topbar-right a:hover {
-            border-color: rgba(65, 72, 51, 0.2);
-            background: rgba(248, 244, 239, 0.85);
-            color: var(--dark-olive);
-        }
 
         .admin-main {
             flex: 1;
@@ -206,16 +170,6 @@
 <body>
 <div class="admin-shell">
 
-    <div class="admin-topbar">
-        <div class="admin-topbar-left">
-            <span>🐾 Pending proposals</span>
-        </div>
-        <div class="admin-topbar-right">
-            <a href="{% url 'admin_dashboard' %}">Dashboard</a>
-            <a href="{% url 'admin_manage_animals' %}">All animals</a>
-        </div>
-    </div>
-
     <main class="admin-main">
         <section class="admin-inner">
             <h1>Animals waiting for approval</h1>
@@ -275,4 +229,4 @@
     </main>
 </div>
 </body>
-</html>
+{% endblock %}
