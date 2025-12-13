@@ -16,9 +16,6 @@
     padding: 28px 30px;
     border-radius: 26px;
 
-    <!-- 🔒 HIDDEN (VRAIMENT envoyés en POST) -->
-    
-    <input type="hidden" name="animal_id" value="{{ animal_id }}">
 
     <!-- AFFICHAGE VISUEL -->
     <div class="mb-3">
@@ -132,30 +129,26 @@
         <div class="adoption-error">{{ error }}</div>
     {% endif %}
 
-    <form method="POST" class="adoption-card">
+ <form method="POST" class="adoption-card">
     {% csrf_token %}
+
+    <input type="hidden" name="animal_id" value="{{ animal_id }}">
 
     <div class="adoption-group">
         <label>Animal ID</label>
-        <input type="number"
-               name="animal_id"
-               value="{{ animal_id }}"
-               readonly>
+        <input type="number" value="{{ animal_id }}" readonly>
     </div>
 
-    <!-- APPOINTMENT ID -->
-        <div class="adoption-group">
-            <label>Appointment ID (optional)</label>
-            <input type="number"
-                   name="appointment_id">
-        </div>
+    <div class="adoption-group">
+        <label>Appointment ID (optional)</label>
+        <input type="number" name="appointment_id">
+    </div>
 
-        <input type="hidden" name="animal_id" value="{{ animal_id }}">
-        <button class="adoption-submit">
-            Submit Adoption Request
-        </button>
-        
-    </form>
+    <button class="adoption-submit">
+        Submit Adoption Request
+    </button>
+</form>
+
 
 </div>
 

@@ -7,7 +7,6 @@ from adoption_service.utils import get_service_url
 from adoption.messaging.producer import publish_adoption
 
 from adoption_service.utils import get_service_url
-from .utils import get_current_user_id
 
 
 def redirect_to_login():
@@ -24,47 +23,38 @@ def home(request):
 # -------------------------------------------------------------------
 # CREATE ADOPTION REQUEST
 # -------------------------------------------------------------------
-
 def create_request(request):
-    # 🔐 ALWAYS get user from session
-    user_id = get_current_user_id(request)
-
-    if not user_id:
-        return redirect("http://127.0.0.1:8001/login/")
-
-
-    # -------------------------
-    # GET → show form
-    # -------------------------
+    # GET: open form with prefilled animal_id
     if request.method == "GET":
         animal_id = request.GET.get("animal_id")
-
-        if not animal_id:
-            return JsonResponse({"error": "Missing animal_id"}, status=400)
 
         return render(request, "client/form_adoption.html", {
             "animal_id": animal_id
         })
 
-    # -------------------------
-    # POST → create adoption
-    # -------------------------
+    # POST: submit adoption
     if request.method == "POST":
+        user_id = request.POST.get("user_id")
         animal_id = request.POST.get("animal_id")
+        appointment_id = request.POST.get("appointment_id")
 
-        if not animal_id:
-            return JsonResponse({"error": "Missing animal_id"}, status=400)
+        if not user_id or not animal_id:
+            return render(request, "form_adoption.html", {
+                "error": "User ID and Animal ID are required",
+                "animal_id": animal_id
+            })
 
-        adoption = AdoptionRequest.objects.create(
+        req = AdoptionRequest.objects.create(
+            user_id=user_id,
             animal_id=animal_id,
+            appointment_id=appointment_id or None,
             status="pending"
         )
 
-        return render(
-            request,
-            "client/success_adoption.html",
-            {"adoption": adoption}
-        )
+        return render(request, "client/success_adoption.html", { "adoption": req
+})
+
+
 
 # -------------------------------------------------------------------
 # LIST USER REQUESTS
@@ -201,6 +191,4 @@ def go_to_notifications(request, user_id):
         return JsonResponse({"error": "Notifications service not found in Consul"}, status=500)
 
     # 2. Rediriger vers notifications-service
-    return redirect(
-        f"{settings.TRAEFIK_BASE_URL}/notifications/user/{user_id}/"
-    )
+    return redirect(f"{notif_url}/notifications/user/{user_id}/")
