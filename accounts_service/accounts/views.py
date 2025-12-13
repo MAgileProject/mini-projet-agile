@@ -28,12 +28,14 @@ def login_view(request):
             if not user.is_active:
                 messages.error(request, "Account disabled")
                 return render(request, "accounts/login.html", {"form": form})
-
+        
            
             if user.is_admin:
-                return redirect("http://127.0.0.1:8002/admin/")
+                return redirect("http://127.0.0.1:8002/admin/?user_id={user.id}")
             else:
-                return redirect("http://127.0.0.1:8002/")
+                return redirect("http://127.0.0.1:8002/?user_id={user.id}")
+            
+            
 
     else:
         form = LoginForm()

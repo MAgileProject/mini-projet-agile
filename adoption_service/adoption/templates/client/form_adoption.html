@@ -1,8 +1,4 @@
 {% extends "base.html" %}
-<<<<<<< HEAD
-
-=======
->>>>>>> 712e0f3ad6997c832e2329e60ac3f9b6d0481045
 {% block title %}Apply for Adoption{% endblock %}
 
 {% block content %}
@@ -16,20 +12,22 @@
 <form method="POST" class="p-4 shadow rounded bg-white">
     {% csrf_token %}
 
-    <!-- USER ID (MANUAL) -->
+    <!-- 🔒 HIDDEN (VRAIMENT envoyés en POST) -->
+    <input type="hidden" name="user_id" value="{{ user_id }}">
+    <input type="hidden" name="animal_id" value="{{ animal_id }}">
+
+    <!-- AFFICHAGE VISUEL -->
     <div class="mb-3">
         <label class="form-label">User ID</label>
         <input type="number"
-               name="user_id"
                class="form-control"
-               required>
+               value="{{ user_id }}"
+               readonly>
     </div>
 
-    <!-- ANIMAL ID (AUTO-FILLED & LOCKED) -->
     <div class="mb-3">
         <label class="form-label">Animal ID</label>
         <input type="number"
-               name="animal_id"
                class="form-control"
                value="{{ animal_id }}"
                readonly>
@@ -47,5 +45,6 @@
         Submit Adoption Request
     </button>
 </form>
+
 
 {% endblock %}

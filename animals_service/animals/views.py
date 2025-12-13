@@ -50,8 +50,10 @@ def filter_animals(request):
 # ============================
 
 def catalog_view(request):
-    animals = filter_animals(request).filter(status="available")
-    return render(request, "animals/catalog.html", {"animals": animals})
+    user_id = request.GET.get("user_id")
+    print("🔥 USER ID IN ANIMALS =", user_id)
+    animals = Animal.objects.all()
+    return render(request, "animals/catalog.html", {"animals": animals, "user_id": user_id})
 
 
 @api_view(["POST"])

@@ -203,21 +203,13 @@ main {
         <a href="http://127.0.0.1:8001/api/accounts/home/">Mon compte</a>
 
         <!-- adoption_service -->
-        <a href="http://127.0.0.1:8003/adoption/list/1/">Mes adoptions</a>
+        <a href="http://127.0.0.1:80/adoption/list/1/">Mes adoptions</a>
 
         <!-- notifications (adoption_service) -->
-<<<<<<< HEAD
-        <a href="http://127.0.0.1:80/notifications/user/6/">
-            🔔 Notifications
-=======
-        <a href="http://127.0.0.1:8004/notifications/user/{{ request.user.id }}/"
-           class="nav-notification"
-           title="My notifications">
-            🔔
-            {% if notifications_count %}
-                <span>{{ notifications_count }}</span>
-            {% endif %}
->>>>>>> aeab8c9eace1aea025b44669fe3aacc3b19696a2
+
+        <a class="nav-link"
+              href="http://127.0.0.1:8004/notifications/user/{{ user_id }}/">
+              🔔 My Notifications
         </a>
 
         <a href="#about-section">À propos</a>

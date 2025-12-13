@@ -24,34 +24,39 @@ def home(request):
 # CREATE ADOPTION REQUEST
 # -------------------------------------------------------------------
 def create_request(request):
-    # GET: open form with prefilled animal_id
+    # -------------------------
+    # GET : ouvrir le formulaire
+    # -------------------------
     if request.method == "GET":
+        user_id = request.GET.get("user_id")
         animal_id = request.GET.get("animal_id")
 
+        if not user_id:
+            return redirect("http://127.0.0.1:8001/login/")
+
         return render(request, "client/form_adoption.html", {
+            "user_id": user_id,
             "animal_id": animal_id
         })
 
-    # POST: submit adoption
+    # -------------------------
+    # POST : créer l’adoption
+    # -------------------------
     if request.method == "POST":
         user_id = request.POST.get("user_id")
         animal_id = request.POST.get("animal_id")
-        appointment_id = request.POST.get("appointment_id")
 
         if not user_id or not animal_id:
-            return render(request, "form_adoption.html", {
-                "error": "User ID and Animal ID are required",
-                "animal_id": animal_id
-            })
+            return JsonResponse({"error": "Missing data"}, status=400)
 
-        req = AdoptionRequest.objects.create(
+        AdoptionRequest.objects.create(
             user_id=user_id,
             animal_id=animal_id,
-            appointment_id=appointment_id or None,
             status="pending"
         )
 
-        return render(request, "client/success_adoption.html", {"request": req})
+        return render(request, "client/success_adoption.html")
+
 
 
 # -------------------------------------------------------------------
@@ -73,7 +78,7 @@ def request_status(request, id):
             "user_id": req.user_id,
             "animal_id": req.animal_id,
             "status": req.status,
-            "date": req.date_requested,
+            "date": req.date_requested
         })
     except AdoptionRequest.DoesNotExist:
         return JsonResponse({"error": "Not found"}, status=404)
@@ -108,42 +113,21 @@ def admin_list(request):
 # -------------------------------------------------------------------
 # APPROVE REQUEST (FIXED)
 # -------------------------------------------------------------------
-
-
-
 def approve_request(request, id):
     try:
         req = AdoptionRequest.objects.get(id=id)
-
-        # 1️⃣ Update adoption status
         req.status = "approved"
         req.save()
 
-        # 2️⃣ Notify animals_service via CONSUL (safe call)
+        # Try sending event but DO NOT BREAK if RabbitMQ fails
         try:
-            animals_url = get_service_url("animals-service")
-
-            if animals_url:
-                requests.post(
-                    f"{animals_url}/api/animals/{req.animal_id}/adopted/",
-                    timeout=3
-                )
-                print("✅ Animal marked as adopted:", req.animal_id)
-            else:
-                print("⚠ animals-service not found in Consul")
-
-        except Exception as e:
-            print("⚠ Error notifying animals_service:", e)
-
-        # 3️⃣ RabbitMQ event (keep your logic)
-        try:
-            publish_adoption({
-                "event": "adoption_approved",
-                "request_id": req.id,
-                "user_id": req.user_id,
-                "animal_id": req.animal_id
+           publish_adoption({
+             "event": "adoption_approved",
+             "request_id": req.id,
+             "user_id": req.user_id,
+             "animal_id": req.animal_id
             })
-            print("🔔 Adoption approved event sent:", req.id)
+           print("🔔 Approve request triggered for ID:", req.id)
 
         except Exception as e:
             print("⚠ RabbitMQ ERROR on approve:", e)
@@ -201,7 +185,7 @@ def check_adoption(request, user_id, animal_id):
     
 
 from adoption_service.utils import get_service_url
-from django.conf import settings
+
 def go_to_notifications(request, user_id):
     # 1. Obtenir l’URL du microservice via Consul
     notif_url = get_service_url("notifications-service")
